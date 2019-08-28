@@ -3,7 +3,6 @@ define("TEST",true);
 define("SENDMAIL_DO_NOT_SEND_MAILS",true);
 
 require(__DIR__."/connections_and_handler.php");
-class tc_super_base extends PHPUnit\Framework\TestCase {}
 
 // === Creating testing table in postgresql
 $pg = PgMole::GetInstance();

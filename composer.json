@@ -11,7 +11,8 @@
 		"require-dev": {
 			"atk14/stop-watch": "0.*",
 			"atk14/files": ">1.3",
-			"phpunit/phpunit": "~6"
+			"atk14/tester": "*",
+			"phpunit/phpunit": "4.8.*"
 		},
 		"autoload": {
 			"classmap": ["src"]
