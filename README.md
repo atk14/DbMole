@@ -20,7 +20,8 @@ Install required dependencies for development:
 
 Run tests:
 
-    ./vendor/bin/phpunit
+    cd test
+    ../vendor/bin/run_unit_tests
 
 License
 -------
