@@ -13,7 +13,7 @@ At first, define the global function dbmole_connection which returns connection 
 At this example only one Postgresql database is considered.
 
     function dbmole_connection($dbmole){
-			return pg_connect("dbname=testing_database host=localhost user=test password=test123");
+      return pg_connect("dbname=testing_database host=localhost user=test password=test123");
     }
 
 Let's use DbMole:
@@ -35,16 +35,16 @@ Selecting single row:
 Selecting single value:
 
     $amount_of_books = $dbmole->selectSingleValue("SELECT COUNT(*) FROM books");
-    // or bether
+    // or better
     $amount_of_books = $dbmole->selectInt("SELECT COUNT(*) FROM books");
 
 For selecting single values, there are also methods:
 
-    - selectValue()
-    - selectInt()
-    - selectFloat()
-    - selectBool()
-    - selectString()
+- selectValue()
+- selectInt()
+- selectFloat()
+- selectBool()
+- selectString()
 
 Safe binding of query variables:
 
