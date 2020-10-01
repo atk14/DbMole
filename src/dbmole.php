@@ -589,29 +589,38 @@ class DbMole{
 		$out[] = "bind_ar";
 		$out[] = "-------";
 		$out[] = print_r($this->getBindAr(),true);
-		if(isset($GLOBALS["_SERVER"]));{
-			$out[] = "";
-			$out[] = "server vars";
-			$out[] = "-----------";
+		if(php_sapi_name()=="cli"){
+			$out[] = "script";
+			$out[] = "------";
+			$out[] = $_SERVER["SCRIPT_FILENAME"];
+			$out[] = "argv";
+			$out[] = "----";
+			$out[] = print_r($GLOBALS["argv"],true);
+		}else{
+			if(isset($GLOBALS["_SERVER"]));{
+				$out[] = "";
+				$out[] = "server vars";
+				$out[] = "-----------";
 
-			// $_SERVER["PHP_AUTH_PW"] may contain a password in plain text form
-			$server_vars = $GLOBALS["_SERVER"];
-			if(isset($server_vars["PHP_AUTH_PW"])){
-				$server_vars["PHP_AUTH_PW"] = "*************";
+				// $_SERVER["PHP_AUTH_PW"] may contain a password in plain text form
+				$server_vars = $GLOBALS["_SERVER"];
+				if(isset($server_vars["PHP_AUTH_PW"])){
+					$server_vars["PHP_AUTH_PW"] = "*************";
+				}
+				$out[] = print_r($server_vars,true);
 			}
-			$out[] = print_r($server_vars,true);
-		}
-		if(isset($GLOBALS["_GET"]));{
-			$out[] = "";
-			$out[] = "get vars";
-			$out[] = "--------";
-			$out[] = print_r($GLOBALS["_GET"],true);
-		}
-		if(isset($GLOBALS["_POST"]));{
-			$out[] = "";
-			$out[] = "post vars";
-			$out[] = "--------";
-			$out[] = print_r($GLOBALS["_POST"],true);
+			if(isset($GLOBALS["_GET"]));{
+				$out[] = "";
+				$out[] = "get vars";
+				$out[] = "--------";
+				$out[] = print_r($GLOBALS["_GET"],true);
+			}
+			if(isset($GLOBALS["_POST"]));{
+				$out[] = "";
+				$out[] = "post vars";
+				$out[] = "--------";
+				$out[] = print_r($GLOBALS["_POST"],true);
+			}
 		}
 		return join("\n",$out);
 	}
@@ -1526,6 +1535,57 @@ class DbMole{
 			return (bool)$value;
 		}
 		return in_array(strtolower($value),array("t","true","y"));
+	}
+
+	/**
+	 *
+	 *	echo $dbmole->getDatabaseServerVersion(); // "9.6.19"
+	 *	var_dump($dbmole->getDatabaseServerVersion(["as_array" => true]);) // ["major" => 9, "minor" => 6, "patch" => 19]
+	 *	var_dump($dbmole->getDatabaseServerVersion("as_array");) // shortcut
+	 *	echo $dbmole->getDatabaseServerVersion("as_float"); // 9.6 - only major and minor
+	 */
+	final function getDatabaseServerVersion($options = array()){
+		return $this->_parseVersion($this->_getDatabaseServerVersion(),$options);
+	}
+
+	/**
+	 *
+	 *	echo $dbmole->getDatabaseServerVersion(); // "9.5.21"
+	 *	var_dump($dbmole->getDatabaseServerVersion(["as_array" => true]);) // ["major" => 9, "minor" => 5, "patch" => 21]
+	 *	var_dump($dbmole->getDatabaseClientVersion("as_array");) // shortcut
+	 *	echo $dbmole->getDatabaseClientVersion("as_float"); // 9.5 - only major and minor
+	 */
+	final function getDatabaseClientVersion($options = array()){
+		return $this->_parseVersion($this->_getDatabaseClientVersion(),$options);
+	}
+
+	protected function _parseVersion($version,$options){
+		if(is_string($options)){
+			$options = array($options => true);
+		}
+		$options += array(
+			"as_array" => false,
+			"as_float" => false,
+		);
+
+		if(strlen($version)==0){ return null; }
+		if($options["as_array"]){
+			$ary = explode(".",$version);
+			return array(
+				"major" => (int)$ary[0],
+				"minor" => isset($ary[1]) ? (int)$ary[1] : 0,
+				"patch" => isset($ary[2]) ? (int)$ary[2] : 0,
+			);
+		}
+		if($options["as_float"]){
+			$ar = $this->_parseVersion($version,array("as_array" => true));
+			return (float)($ar["major"].".".$ar["minor"]);
+		}
+
+		if(preg_match('/^\d+\.\d+$/',$version)){
+			$version = "$version.0"; // "10.1" -> "10.1.0"
+		}
+		return $version;
 	}
 
 	/**

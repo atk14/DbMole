@@ -59,6 +59,25 @@ class tc_dbmole extends tc_base{
 		),$dbmole->getBindAr());
 	}
 
+	function test_similar_binding_values(){
+		$dbmole = $this->pg;
+
+		$dbmole->doQuery("INSERT INTO test_table (id,title) VALUES(:a1,:a11)",array(
+			":a1" => 111,
+			":a11" => "Confusing title :a1 :a11 :a111",
+		));
+		$title = $dbmole->selectSingleValue("SELECT title FROM test_table WHERE id=111");
+		$this->assertEquals("Confusing title :a1 :a11 :a111",$title);
+
+		// same test with reversed values in in bind_ar
+		$dbmole->doQuery("INSERT INTO test_table (id,title) VALUES(:b1,:b11)",array(
+			":b11" => "Confusing title :b1 :b11 :b111",
+			":b1" => 222,
+		));
+		$title = $dbmole->selectSingleValue("SELECT title FROM test_table WHERE id=222");
+		$this->assertEquals("Confusing title :b1 :b11 :b111",$title);
+	}
+
 	function test_invalid_bind_ar(){
 		$dbmoles = $this->_get_moles();
 
@@ -330,6 +349,55 @@ class tc_dbmole extends tc_base{
 		$this->assertTrue(is_array($ret));
 
 		unlink($sending_lock_file);
+	}
+
+	function test_getDatabaseVersion(){
+		foreach(array($this->pg,$this->my) as $dbmole){
+
+			// Server version
+
+			$server_version_str = $dbmole->getDatabaseServerVersion();
+			$this->assertTrue(is_string($server_version_str));
+			$this->assertTrue(strlen($server_version_str)>0);
+			$this->assertTrue(!!preg_match('/^\d+\.\d+/',$server_version_str));
+
+			$server_version_ary = $dbmole->getDatabaseServerVersion(array("as_array" => true));
+			$this->assertTrue(is_array($server_version_ary));
+			$this->assertTrue(is_int($server_version_ary["major"]));
+			$this->assertTrue($server_version_ary["major"]>0);
+			$this->assertTrue(is_int($server_version_ary["minor"]));
+			$this->assertTrue(is_int($server_version_ary["patch"]));
+			$this->assertEquals($server_version_str,"$server_version_ary[major].$server_version_ary[minor].$server_version_ary[patch]");
+
+			$server_version_float = $dbmole->getDatabaseServerVersion(array("as_float" => true));
+			$this->assertTrue(is_float($server_version_float));
+			$this->assertEquals((float)($server_version_ary["major"].".".$server_version_ary["minor"]),$server_version_float);
+
+			$this->assertEquals($server_version_ary,$dbmole->getDatabaseServerVersion("as_array"));
+			$this->assertEquals($server_version_float,$dbmole->getDatabaseServerVersion("as_float"));
+
+			// Client version
+
+			$client_version_str = $dbmole->getDatabaseClientVersion();
+			$this->assertTrue(is_string($client_version_str));
+			$this->assertTrue(strlen($client_version_str)>0);
+			$this->assertTrue(!!preg_match('/^\d+\.\d+/',$client_version_str));
+
+			$client_version_ary = $dbmole->getDatabaseClientVersion(array("as_array" => true));
+			$this->assertTrue(is_array($client_version_ary));
+			$this->assertTrue(is_int($client_version_ary["major"]));
+			$this->assertTrue($client_version_ary["major"]>0);
+			$this->assertTrue(is_int($client_version_ary["minor"]));
+			$this->assertTrue(is_int($client_version_ary["patch"]));
+			$this->assertEquals($client_version_str,"$client_version_ary[major].$client_version_ary[minor].$client_version_ary[patch]");
+
+			$client_version_float = $dbmole->getDatabaseClientVersion(array("as_float" => true));
+			$this->assertTrue(is_float($client_version_float));
+			$this->assertEquals((float)($client_version_ary["major"].".".$client_version_ary["minor"]),$client_version_float);
+
+			$this->assertEquals($client_version_ary,$dbmole->getDatabaseClientVersion("as_array"));
+			$this->assertEquals($client_version_float,$dbmole->getDatabaseClientVersion("as_float"));
+		}
 	}
 
 	function _test_common_behaviour(&$dbmole){
