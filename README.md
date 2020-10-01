@@ -1,5 +1,5 @@
 DbMole
-=====
+======
 
 [![Build Status](https://travis-ci.org/atk14/DbMole.svg?branch=master)](https://travis-ci.org/atk14/DbMole)
 
@@ -10,13 +10,13 @@ Basic usage
 
 At first, define the global function dbmole_connection which returns connection to the database.
 
-At this example only one Postgresql database is considered.
+Only one Postgresql database is considered in this example.
 
     function dbmole_connection($dbmole){
       return pg_connect("dbname=testing_database host=localhost user=test password=test123");
     }
 
-Let's use DbMole:
+#### Instantiating
 
     $dbmole = PgMole::GetInstance();
 
@@ -73,6 +73,32 @@ For selecting single values, there are also methods:
 
     if($dbmole->isConnected()){
       $dbmole->commit();
+    }
+
+#### Insering new record into a table
+
+    $dbmole->insertIntoTable("books",[
+      "id" => 123,
+      "title" => "Nice Reading",
+      "author" => "Brody Doe"
+    ]);
+
+#### Sequencies
+
+    $next_id = $dbmole->selectSequenceNextval("seq_book");
+    $curr_id = $dbmole->selectSequenceCurrval("seq_book");
+
+#### Error callback
+
+When an error occurs on SQL level, DbMole call the specified callback.
+
+    DbMole::RegisterErrorHandler("dbmole_error_handler");
+
+    function dbmole_error_handler($dbmole){
+      echo "Dear visitor, unfortunately an error has occurred";
+      $dbmole->sendErrorReportToEmail("admin@example.com");
+      $dbmole->logErrorReport();
+      exit(1);
     }
 
 Installation
