@@ -20,19 +20,19 @@ Let's use DbMole:
 
     $dbmole = PgMole::GetInstance();
 
-Selecting rows:
+#### Selecting rows
 
     $rows = $dbmole->selectRows("SELECT id,title,author FROM books");
     foreach($rows as $row){
       echo $row["id"].": ".$row["title"]." (".$row["author"].")<br>";
     }
 
-Selecting single row:
+#### Selecting single row
 
     $row = $dbmole->selectRow("SELECT id,title,author FROM books WHERE id=123");
     var_dump($row); // ["id" => "123", "title" => "Book Title", "author" => "John Doe"]
 
-Selecting single value:
+#### Selecting single value
 
     $amount_of_books = $dbmole->selectSingleValue("SELECT COUNT(*) FROM books");
     // or better
@@ -46,18 +46,18 @@ For selecting single values, there are also methods:
 - selectBool()
 - selectString()
 
-Safe binding of query variables:
+#### Safe binding of the query variables
 
     $rows = $dbmole->selectRows("SELECT id,title,author FROM books WHERE UPPER(title) LIKE UPPER(:search)",[":search" => "%Goodies%"]);
     $row = $dbmole->selectRow("SELECT id,title,author FROM books WHERE id=:id",[":id" => 123]);
     $dbmole->doQuery("UPDATE books SET title=:title, author=:author WHERE id=:id",[":id" => 123,":title" => "Good Reading", ":author" => "Samantha Doe"]);
 
-Limiting rows:
+#### Limiting rows:
 
     $rows = $dbmole->selectRows("SELECT * FROM employees",[],["limit" => "10", "offset" => 0]);
     $rows = $dbmole->selectRows("SELECT * FROM employees WHERE created_at>=:date",[":date" => "2020-01-01"],["limit" => "10", "offset" => 0]);
 
-Working in transaction:
+#### Working in transaction
 
     $dbmole->begin();
 
@@ -65,7 +65,7 @@ Working in transaction:
 
     $dbmole->commit();
 
-Working in transaction, avoiding unnecessarily database connections:
+#### Working in transaction, avoiding unnecessary database connections
 
     $dbmole->begin(["execute_after_connecting" => true]);
 
