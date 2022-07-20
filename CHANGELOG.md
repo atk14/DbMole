@@ -3,6 +3,13 @@ Change Log
 
 All notable changes to the DbMole Project will be documented in this file.
 
+## [1.1.3] - 2022-07-20
+
+* 39a89e5 - DbMole::selectIntoAssociativeArray() improved for one-field queries
+* Recognition of client or server version fixed
+* 54db8ba - [SqlsrvMole] Added experimental support for Microsoft SQL Server
+* c418488 - [SqlsrvMole] Automatic conversion of DateTime objects into strings was removed in SqlsrvMole - it can be replaced with the connection option ReturnDatesAsStrings=true
+
 ## [1.1.2] - 2021-03-15
 
 - Added method DbMole::escapeColumnName4Sql() and used for the proper column names escaping in MySQL
