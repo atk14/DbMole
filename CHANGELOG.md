@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to the DbMole Project will be documented in this file.
 
+## [1.1.4] - 2022-11-05
+
+* ca29e9c - Method DbMole::getStatistics() outputs data in html or plain text
+
 ## [1.1.3] - 2022-07-20
 
 * 39a89e5 - DbMole::selectIntoAssociativeArray() improved for one-field queries
