@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to the DbMole Project will be documented in this file.
 
+## [1.1.5] - 2023-04-09
+
+* b583238 - Added method DbMole::getConnection()
+
 ## [1.1.4] - 2022-11-05
 
 * ca29e9c - Method DbMole::getStatistics() outputs data in html or plain text
