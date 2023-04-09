@@ -434,6 +434,19 @@ class DbMole{
 	}
 
 	/**
+	 * Returns database connection
+	 *
+	 * If the database connection has not yet been established, it will be created.
+	 *
+	 * The return value type depends on the database type.
+	 *
+	 * @return mixed
+	 */
+	final function getConnection(){
+		return $this->_getDbConnect();
+	}
+
+	/**
 	 * @ignore
 	 */
 	function _formatSeconds($sec){
