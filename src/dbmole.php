@@ -765,7 +765,7 @@ class DbMole{
 	function _raiseDBError($message){
     $this->_ErrorMessage = "$message";
 
-		if(strlen($db_error = $this->_getDbLastErrorMessage())>0){
+		if(strlen($db_error = (string)$this->_getDbLastErrorMessage())>0){
 			$this->_ErrorMessage .= " ".$db_error;
 		}
 
