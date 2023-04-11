@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to the DbMole Project will be documented in this file.
 
+## [1.1.6] - 2023-04-10
+
+* e6f7599 - `DbMole::_parseVersion()` fixed for PHP 5.6
+
 ## [1.1.5] - 2023-04-09
 
 * b583238 - Added method DbMole::getConnection()
