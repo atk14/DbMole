@@ -33,6 +33,17 @@ jobs:
       dist: focal
       addons:
         postgresql: "12"
+    - name: "PHP: 8.2"
+      dist: jammy
+      language: ruby
+      addons:
+        postgresql: "14"
+      before_install:
+        - sudo apt install software-properties-common
+        - sudo add-apt-repository ppa:ondrej/php
+        - sudo apt update
+        - sudo apt install php8.2 php8.2-mbstring php8.2-pgsql php8.2-mysql
+        - php -v
 
 services:
   - mysql
