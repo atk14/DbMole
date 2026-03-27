@@ -685,7 +685,7 @@ class DbMole{
 			$out[] = "----";
 			$out[] = print_r($GLOBALS["argv"],true);
 		}else{
-			if(isset($GLOBALS["_SERVER"]));{
+			if(isset($GLOBALS["_SERVER"])){
 				$out[] = "";
 				$out[] = "server vars";
 				$out[] = "-----------";
@@ -697,13 +697,13 @@ class DbMole{
 				}
 				$out[] = print_r($server_vars,true);
 			}
-			if(isset($GLOBALS["_GET"]));{
+			if(isset($GLOBALS["_GET"])){
 				$out[] = "";
 				$out[] = "get vars";
 				$out[] = "--------";
 				$out[] = print_r($GLOBALS["_GET"],true);
 			}
-			if(isset($GLOBALS["_POST"]));{
+			if(isset($GLOBALS["_POST"])){
 				$out[] = "";
 				$out[] = "post vars";
 				$out[] = "--------";
@@ -1480,16 +1480,16 @@ class DbMole{
 	 * @param mixed $value php value
 	 * @return string SQL reprezentation of given value
 	 */
-	function escapeValue4sql($value){
+	function escapeValue4Sql($value){
 			if(is_object($value)){ $value = $value->getId(); }
 			if($value===null)
 					return 'NULL';
 			if(is_float($value))
-					return $this->escapeFloat4sql($value);
+					return $this->escapeFloat4Sql($value);
 			if(is_integer($value))
 					return $value;
 			if(is_bool($value))
-					return $this->escapeBool4sql($value);
+					return $this->escapeBool4Sql($value);
 			return $this->escapeString4Sql($value);
 	}
 
@@ -1508,7 +1508,7 @@ class DbMole{
 		$this->_normalizeBindAr($bind_ar);
 
 		foreach($bind_ar as &$value){
-			$value = $this->escapeValue4sql($value);
+			$value = $this->escapeValue4Sql($value);
 		}
 
 		$query_to_execute = strtr($query,$bind_ar);
