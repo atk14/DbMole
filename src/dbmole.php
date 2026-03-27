@@ -840,6 +840,10 @@ class DbMole{
 	 */
 	function _getAffectedRows(){ return null; }
 
+	function selectRows($query,$bind_ar = array(), $options = array()){
+		return $this->_selectRows($query,$bind_ar,$options);
+	}
+
 	/**
 	 * Returns first record as associative array.
 	 *
