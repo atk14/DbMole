@@ -50,7 +50,7 @@
  * Display statistics
  *
  * ```
- * define("DBMOLE_COLLECT_STATICTICS",true);
+ * define("DBMOLE_COLLECT_STATISTICS",true);
  * $dbmole = &OracleMole::GetInstance();
  * echo $dbmole->getStatistics();
  * ```
@@ -1547,7 +1547,7 @@ class DbMole{
 	 * @access private
 	 */
 	function _hookBeforeQueryExecution(){
-		if(defined("DBMOLE_COLLECT_STATICTICS") && DBMOLE_COLLECT_STATICTICS){
+		if(defined("DBMOLE_COLLECT_STATISTICS") && constant("DBMOLE_COLLECT_STATISTICS")){
 			list($usec, $sec) = explode(" ", microtime());
 			$this->_start_utime = ((float)$usec + (float)$sec);
 		}
@@ -1560,7 +1560,7 @@ class DbMole{
 	function _hookAfterQueryExecution(){
 		global $__DMOLE_STATISTICS__;
 
-		if(defined("DBMOLE_COLLECT_STATICTICS") && DBMOLE_COLLECT_STATICTICS){
+		if(defined("DBMOLE_COLLECT_STATISTICS") && constant("DBMOLE_COLLECT_STATISTICS")){
 			if(!isset($__DMOLE_STATISTICS__)){ $__DMOLE_STATISTICS__ = array(); }
 			if(!isset($__DMOLE_STATISTICS__[$this->getQuery()])){
 				$__DMOLE_STATISTICS__[$this->getQuery()] = array();
