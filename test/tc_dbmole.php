@@ -156,6 +156,18 @@ class TcDbmole extends TcBase{
 		$this->assertEquals(true,$dbmole->isConnected());
 	}
 
+	function test_reconecting(){
+		$dbmole = $this->pg;
+
+		$count = $dbmole->selectInt("SELECT COUNT(*) FROM test_table WHERE id=:id",[":id" => "10"]);
+
+		$dbmole->closeConnection();
+
+		$count2 = $dbmole->selectInt("SELECT COUNT(*) FROM test_table WHERE id=:id",[":id" => "10"]);
+
+		$this->assertEquals($count,$count2);
+	}
+
 	function _test_begin_transaction($dbmole){
 		$dbmole->closeConnection();
 		$this->assertEquals(false,$dbmole->isConnected());
