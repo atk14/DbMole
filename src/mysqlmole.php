@@ -55,9 +55,15 @@ class MysqlMole extends DbMole{
 	}
 
 	function escapeColumnName4Sql($column_name){
-		$column_name = str_replace("\0", "", $column_name); // remove null byte
-		$column_name = str_replace("`","``",$column_name);
-		return "`$column_name`";
+		static $cache = array();
+		$c_key = (string)$column_name;
+		if(!isset($cache[$c_key])){
+			$column_name = str_replace("\0", "", $column_name); // remove null byte
+			$column_name = str_replace("`","``",$column_name);
+			$column_name = "`$column_name`";
+			$cache[$c_key] = $column_name;
+		}
+		return $cache[$c_key];
 	}
 
 	function escapeTableName4Sql($table_name){

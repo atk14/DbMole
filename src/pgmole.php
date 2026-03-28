@@ -110,7 +110,12 @@ class PgMole Extends DbMole{
 	}
 
 	function escapeColumnName4Sql($column_name){
-		return pg_escape_identifier($this->_getDbConnect(), $column_name);
+		static $cache = array();
+		$c_key = (string)$column_name;
+		if(!isset($cache[$c_key])){
+			$cache[$c_key] = pg_escape_identifier($this->_getDbConnect(), $column_name);
+		}
+		return $cache[$c_key];
 	}
 
 	function escapeTableName4Sql($table_name){
