@@ -472,8 +472,7 @@ class DbMole{
 	static function _GetSetErrorHandlerFunction($error_handler = null,$set = false){
 		static $_ERROR_HANDLER_;
 
-		settype($set,"bool");
-		//settype($error_handler,"string"); // could be an anonymous function
+		$set = (bool)$set;
 
 		$prev_error_handler = null;
 		if(isset($_ERROR_HANDLER_)){
@@ -946,7 +945,7 @@ class DbMole{
 			break;
 		}
 		if(isset($out) && isset($options["type"])){
-			settype($out,"$options[type]");
+			$this->_settype($out,"$options[type]");
 		}
 
 		return $out;
@@ -1064,7 +1063,7 @@ class DbMole{
 		foreach($rows as $row){	
 			foreach($row as $value){	
 				if(isset($value) && isset($options["type"])){
-					settype($value,$options["type"]);
+					$this->_settype($value,$options["type"]);
 				}
 				$out[] = $value;
 			}
@@ -1233,8 +1232,8 @@ class DbMole{
 	 * @return bool
 	 */
 	function insertIntoTable($table_name,$values,$options = array()){
-		settype($table_name,"string");
-		settype($values,"array");
+		$table_name = (string)$table_name;
+		$values = (array)$values;
 
 		if(!isset($options["do_not_escape"])){ $options["do_not_escape"] = array(); } 
 		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = array($options["do_not_escape"]); }
@@ -1280,8 +1279,8 @@ class DbMole{
 	 * @return bool
 	 */
 	function insertOrUpdateRecord($table_name,$values,$options = array()){
-		settype($table_name,"string");
-		settype($values,"array");
+		$table_name = (string)$table_name;
+		$values = (array)$values;
 
 		// nazev policka, ktere je rozhodujici, zda zaznam existuje nebo nikoli
 		$options["id_field"] = isset($options["id_field"]) ? (string)$options["id_field"] : "id";
@@ -1387,9 +1386,9 @@ class DbMole{
 	 * @return statement or null on error
 	 */
 	function executeQuery($query,$bind_ar = array(),$options = array()){
-		settype($query,"string");
-		settype($bind_ar,"array");
-		settype($options,"array");
+		$query = (string)$query;
+		$bind_ar = (array)$bind_ar;
+		$options = (array)$options;
 
 		// prevod prip. poli v $bind_ar
 		$b_ar = array();
@@ -1478,7 +1477,7 @@ class DbMole{
 	 * @return string
 	 */
 	function escapeBool4Sql($value){
-		return $value? 'TRUE' : 'FALSE';
+		return $value ? 'TRUE' : 'FALSE';
 	}
 
 	/**
@@ -1754,7 +1753,7 @@ class DbMole{
 		}
 	}
 
-	function _htmlspecialchars($string){
+	protected function _htmlspecialchars($string){
 		if(!is_string($string)){
 			$string = (string)$string;
 		}
@@ -1768,5 +1767,21 @@ class DbMole{
 			$encoding = "ISO-8859-1";
 		}
 		return htmlspecialchars((string)$string,$flags,$encoding);
+	}
+
+	protected function _settype(&$var,$type){
+		if(is_null($var)){ return; }
+		$type = (string)$type;
+		switch((string)$type){
+			case "integer":
+				$var = (integer)$var;
+				return;
+			case "float":
+				$var = (float)$var;
+				return;
+			case "string":
+				$var = (string)$var;
+				return;
+		}
 	}
 }
