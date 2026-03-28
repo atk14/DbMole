@@ -137,7 +137,6 @@ class PgMole Extends DbMole{
 		if(
 			!$this->_BindAr ||
 			strpos(trim($query),';')!==false // multiple commands must be processed using pg_query
-			|| 1
 		){
 			return parent::_executeQuery();
 		}
