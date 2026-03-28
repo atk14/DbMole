@@ -1,5 +1,5 @@
 <?php
-class tc_dbmole extends tc_base{
+class TcDbmole extends TcBase{
 
 	function test_uses_sequencies(){
 		$this->assertFalse($this->my->usesSequencies());
