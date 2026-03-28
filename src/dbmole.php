@@ -1507,9 +1507,9 @@ class DbMole{
 	 * @return statement or null on error
 	 */
 	function _executeQuery(){
-		$query = &$this->_Query;
-		$bind_ar = &$this->_BindAr;
-		$options = &$this->_Options;
+		$query = $this->_Query;
+		$bind_ar = $this->_BindAr;
+		$options = $this->_Options;
 
 		$this->_normalizeBindAr($bind_ar);
 
