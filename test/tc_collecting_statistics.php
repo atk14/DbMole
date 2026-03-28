@@ -8,7 +8,7 @@ class TcCollectingStatistics extends TcBase {
 
 		$this->assertStringContains("total queries: 3",$dbmole->getStatistics());
 
-		$dbmole->selectInt("SELECT COUNT(*) FROM articles");
+		$dbmole->selectInt("SELECT COUNT(*) FROM test_table");
 
 		$this->assertStringContains("total queries: 4",$dbmole->getStatistics());
 	}
