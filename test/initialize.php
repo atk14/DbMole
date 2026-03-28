@@ -1,7 +1,7 @@
 <?php
 define("TEST",true);
 define("SENDMAIL_DO_NOT_SEND_MAILS",true);
-define("DBMOLE_COLLECT_STATISTICS",!!preg_match("/tc_statistics/",$_TEST["FILENAME"]));
+define("DBMOLE_COLLECT_STATISTICS",!!preg_match("/tc_collecting_statistics/",$_TEST["FILENAME"]));
 
 require(__DIR__."/connections_and_handler.php");
 

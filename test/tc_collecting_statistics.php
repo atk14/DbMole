@@ -1,5 +1,5 @@
 <?php
-class TcStatistics extends TcBase {
+class TcCollectingStatistics extends TcBase {
 
 	function test(){
 		$this->assertEquals(true,DBMOLE_COLLECT_STATISTICS);
