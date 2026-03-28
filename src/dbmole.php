@@ -61,6 +61,7 @@
  * @filesource
  */
 class DbMole{
+
 	/**
 	 * Name of database configuration
 	 *

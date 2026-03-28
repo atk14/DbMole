@@ -1,5 +1,6 @@
 <?php
 class MysqlMole extends DbMole{
+
 	static function &GetInstance($configuration_name = "default",$options = array()){
 		$options["class_name"] = "MysqlMole";
 		return parent::GetInstance($configuration_name,$options);
@@ -54,7 +55,18 @@ class MysqlMole extends DbMole{
 	}
 
 	function escapeColumnName4Sql($column_name){
+		$column_name = str_replace("\0", "", $column_name); // remove null byte
+		$column_name = str_replace("`","``",$column_name);
 		return "`$column_name`";
+	}
+
+	function escapeTableName4Sql($table_name){
+		// Handling the schema.table entry
+		if (strpos($table_name,'.') !== false) {
+			list($schema, $table) = explode('.',$table_name);
+			return $this->escapeColumnName4Sql($schema).".".$this->escapeColumnName4Sql($table);
+		}
+		return $this->escapeColumnName4Sql($table_name);
 	}
 
 	function escapeString4Sql($s){
