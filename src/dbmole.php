@@ -841,7 +841,11 @@ class DbMole{
 	function _getAffectedRows(){ return null; }
 
 	function selectRows($query,$bind_ar = array(), $options = array()){
-		return $this->_selectRows($query,$bind_ar,$options);
+		$class_name = get_class($this);
+		if($class_name=="DbMole"){
+			throw new LogicException("Method selectRows() must be called through a subclass");
+		}
+		throw new LogicException("Method $class_name::selectRows() must be implemented");
 	}
 
 	/**

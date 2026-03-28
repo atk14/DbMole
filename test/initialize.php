@@ -18,6 +18,9 @@ $my->doQuery($matches[1]);
 preg_match('/\n(CREATE TABLE.*?);/s',$script,$matches);
 $my->doQuery($matches[1]);
 
+class TestingDbMole extends DbMole {
+}
+
 
 class ProxyDbMole extends DbMole {
 
