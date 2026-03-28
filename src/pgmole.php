@@ -206,6 +206,9 @@ class PgMole Extends DbMole{
 	}
 
 	function _getConnectionKey($connection){
+		if(!is_object($connection)){
+			return (int)$connection;
+		}
 		return spl_object_hash($connection);
 	}
 }
