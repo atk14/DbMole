@@ -6,6 +6,7 @@ class TcCollectingStatistics extends TcBase {
 
 		$dbmole = $this->pg;
 
+		// 3 queries from structures.postgresql.sql
 		$this->assertStringContains("total queries: 3",$dbmole->getStatistics());
 
 		$dbmole->selectInt("SELECT COUNT(*) FROM test_table");
