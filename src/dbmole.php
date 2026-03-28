@@ -209,20 +209,18 @@ class DbMole{
 
 		$class_name = $options["class_name"];
 
-		settype($configuration_name,"string");
-		settype($class_name,"string");
-
-		$out = new $class_name($configuration_name);
-		$db_type = $out->getDatabaseType();
+		$configuration_name = (string)$configuration_name;
+		$class_name = (string)$class_name;
 
 		if(!isset($instance_store_ar)){ $instance_store_ar = array(); }
-		if(!isset($instance_store_ar[$db_type])){ $instance_store_ar[$db_type] = array(); }
+		if(!isset($instance_store_ar[$class_name])){ $instance_store_ar[$class_name] = array(); }
 		
-		if(!isset($instance_store_ar[$db_type][$configuration_name])){
-			$instance_store_ar[$db_type][$configuration_name] = &$out;
+		if(!isset($instance_store_ar[$class_name][$configuration_name])){
+			$out = new $class_name($configuration_name);
+			$instance_store_ar[$class_name][$configuration_name] = &$out;
 		}
 		
-		return $instance_store_ar[$db_type][$configuration_name];
+		return $instance_store_ar[$class_name][$configuration_name];
 	}
 
 	/**
