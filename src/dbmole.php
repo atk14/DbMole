@@ -546,7 +546,7 @@ class DbMole{
 			"cache" => 0, // 0, 600, true, false
 			"recache" => false,
 		),$options);
-		$options["avoid_recursion"] = true; // protoze primo metoda selectRows() vola _selectRows() a naopak, mame tady tento ochranny parametr
+		$options["avoid_recursion"] = true; // Because the selectRows() method directly calls _selectRows() and vice versa, we have this safeguard parameter here
 
 
 		if(isset($options["offset"]) || isset($options["limit"])){
