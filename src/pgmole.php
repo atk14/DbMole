@@ -181,6 +181,7 @@ class PgMole Extends DbMole{
 			$this->_PreparedStatements[$conn_key][$stmt_name] = true;
 		}
 		$result = pg_execute($connection, $stmt_name, $positional_values);
+		$this->_AffectedRows = $result!==false ? pg_affected_rows($result) : null;
 
 		if(!$result){
 			$this->_raiseDBError("failed to execute prepared SQL query");

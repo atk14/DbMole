@@ -645,10 +645,10 @@ class TcDbmole extends TcBase{
 			"33" => "33",
 		),$ar);
 
-		$this->assertTrue($dbmole->doQuery("UPDATE test_table SET an_integer=44 WHERE an_integer=22"));
+		$this->assertTrue($dbmole->doQuery("UPDATE test_table SET an_integer=:int1 WHERE an_integer=:int2",array(":int1" => 44, ":int2" => 22)));
 		$this->assertEquals(1,$dbmole->getAffectedRows(),"calling getAffectedRows() on ".$dbmole->getDatabaseType());
 
-		$this->assertTrue($dbmole->doQuery("UPDATE test_table SET an_integer=44 WHERE an_integer=-1234"));
+		$this->assertTrue($dbmole->doQuery("UPDATE test_table SET an_integer=:int1 WHERE an_integer=:int2",array(":int1" => 44, ":int2" => -1234)));
 		$this->assertEquals(0,$dbmole->getAffectedRows(),"calling getAffectedRows() on ".$dbmole->getDatabaseType());
 
 		$this->assertEquals("44",$dbmole->selectSingleValue("SELECT MAX(an_integer) FROM test_table"));
