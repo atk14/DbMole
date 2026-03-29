@@ -144,6 +144,7 @@ class PgMole Extends DbMole{
 		$bind_keys = array_keys($this->_BindAr);
 		$positional_values = array_values($this->_BindAr);
 		$positional_values = array_map(function($value){
+			if(is_object($value)){ $value = $value->getId(); }
 			if(is_null($value)){ return $value; }
 			if(is_bool($value)){ return $value ? "t" : "f"; }
 			return (string)$value;

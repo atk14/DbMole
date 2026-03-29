@@ -669,6 +669,20 @@ class TcDbmole extends TcBase{
 		));
 
 		$this->assertEquals(array("10","33"),$ints);
+
+		// binding an object
+
+		$article = new Article(11);
+		$cnt = $dbmole->selectInt("SELECT COUNT(*) FROM test_table WHERE an_integer=:article", array(
+			":article" => $article,
+		));
+		$this->assertEquals(2,$cnt);
+
+		$article = new Article(1000);
+		$cnt = $dbmole->selectInt("SELECT COUNT(*) FROM test_table WHERE an_integer=:article", array(
+			":article" => $article,
+		));
+		$this->assertEquals(0,$cnt);
 	}
 
 	function _test_select_sequence(&$dbmole){
