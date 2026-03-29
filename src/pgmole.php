@@ -135,6 +135,7 @@ class PgMole Extends DbMole{
 		$query = $this->_Query;
 
 		if(
+			!DBMOLE_USE_PREPARED_STATEMENTS ||
 			!$this->_BindAr ||
 			strpos(trim($query),';')!==false // multiple commands must be processed using pg_query
 		){

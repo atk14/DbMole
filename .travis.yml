@@ -95,4 +95,4 @@ before_script:
   - sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE test TO test" -U postgres
 
 script:
-  - cd test && ../vendor/bin/run_unit_tests
+  - cd test && ../vendor/bin/run_unit_tests && DBMOLE_USE_PREPARED_STATEMENTS=true ../vendor/bin/run_unit_tests
