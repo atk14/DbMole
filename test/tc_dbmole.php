@@ -502,8 +502,10 @@ class TcDbmole extends TcBase{
 	}
 
 	function test_bad_query(){
-		$dbmole = $this->pg;
-
+		$this->_test_bad_query($this->pg);
+		$this->_test_bad_query($this->my);
+	}
+	function _test_bad_query($dbmole){
 		DbMole::RegisterErrorHandler(function($dbmole){
 			throw new Exception($dbmole->getErrorMessage());
 		});
