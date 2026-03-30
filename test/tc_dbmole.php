@@ -482,7 +482,18 @@ class TcDbmole extends TcBase{
 	function test_parameter_not_used_in_query(){
 		$dbmole = $this->pg;
 
+		// --
+
 		$cnt = $dbmole->selectInt("SELECT COUNT(*) FROM test_table WHERE title=:title",array(
+			":title" => "test",
+			":title2" => "test2"
+		));
+
+		$this->assertEquals(0,$cnt);
+
+		// --
+
+		$cnt = $dbmole->selectInt("SELECT COUNT(*) FROM test_table WHERE title=:title2",array(
 			":title" => "test",
 			":title2" => "test2"
 		));
