@@ -3,7 +3,13 @@ define("TEST",true);
 define("SENDMAIL_DO_NOT_SEND_MAILS",true);
 define("DBMOLE_COLLECT_STATISTICS",!!preg_match("/tc_collecting_statistics/",$_TEST["FILENAME"]));
 
+if(getenv("DBMOLE_USE_PREPARED_STATEMENTS")){
+	// $ DBMOLE_USE_PREPARED_STATEMENTS=true run_unit_tests
+	define("DBMOLE_USE_PREPARED_STATEMENTS",!!getenv("DBMOLE_USE_PREPARED_STATEMENTS"));
+}
+
 require(__DIR__."/connections_and_handler.php");
+require(__DIR__."/article.php");
 
 // === Creating testing table in postgresql
 $pg = PgMole::GetInstance();
