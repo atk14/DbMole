@@ -3,7 +3,7 @@ class PgMole Extends DbMole{
 
 	protected $_AffectedRows = null;
 
-	protected $_PreparedStatements = array();
+	protected $_PreparedStatements = [];
 
 	/**
 	* Vrati instanci objektu pro danou konfiguraci.
@@ -14,7 +14,7 @@ class PgMole Extends DbMole{
 	* @param string $configuration_name		"default"
 	* @return PgMole									nebo null
 	*/
-	static function &GetInstance($configuration_name = "default",$options = array()){
+	static function &GetInstance($configuration_name = "default",$options = []){
 		$options["class_name"] = "PgMole";
 		return parent::GetInstance($configuration_name,$options);
 	}
@@ -39,12 +39,12 @@ class PgMole Extends DbMole{
 	* @param array $options
 	* @return array						pole asociativnich poli; null v pripade chyby
 	*/
-	function selectRows($query,$bind_ar = array(), $options = array()){
-		$options = array_merge(array(
+	function selectRows($query,$bind_ar = [], $options = []){
+		$options = array_merge([
 			"limit" => null,
 			"offset" => null,
 			"avoid_recursion" => false,
-		),$options);
+		],$options);
 
 		if(!$options["avoid_recursion"]){
 			return $this->_selectRows($query,$bind_ar,$options);
@@ -53,7 +53,7 @@ class PgMole Extends DbMole{
 
 		if(isset($options["offset"]) || isset($options["limit"])){
 			if(!isset($options["offset"])){ $options["offset"] = 0; }
-			$_cond = array();
+			$_cond = [];
 			if(isset($options["offset"])){
 				$_cond[] = "OFFSET :offset____";
 				$bind_ar[":offset____"] = $options["offset"];
@@ -73,7 +73,7 @@ class PgMole Extends DbMole{
 
 		if(!$result){ return null; }
 
-		$out = array();
+		$out = [];
 
 		while(1){
 			$row = pg_fetch_assoc($result);
@@ -114,7 +114,7 @@ class PgMole Extends DbMole{
 	}
 
 	function escapeColumnName4Sql($column_name){
-		static $cache = array();
+		static $cache = [];
 		$c_key = (string)$column_name;
 		if(!isset($cache[$c_key])){
 			$cache[$c_key] = pg_escape_identifier($this->_getDbConnect(), $column_name);
@@ -168,7 +168,7 @@ class PgMole Extends DbMole{
 		$conn_key = $this->_getConnectionKey($connection);
 
 		if(!isset($this->_PreparedStatements[$conn_key])){
-			$this->_PreparedStatements[$conn_key] = array();
+			$this->_PreparedStatements[$conn_key] = [];
 		}
 
 		$stmt_name = "dbmole_".sha1($positional_query);

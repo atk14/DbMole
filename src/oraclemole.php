@@ -17,11 +17,11 @@
  *		echo $mole->selectSingleValue("SELECT COUNT(*) FROM articles","integer");
  *
  *		// nacteni jednoho radku
- * 	$row = $mole->selectFirstRow("SELECT * FROM articles WHERE id=:id",array(":id" => 2223445));
+ * 	$row = $mole->selectFirstRow("SELECT * FROM articles WHERE id=:id",[":id" => 2223445]);
  *		echo $row["name"];
  *
  *		// nacteni vice radku
- * 	$rows = $mole->selectRows("SELECT * FROM articles WHERE source_id=:source_id",array(":source_id" => 112233"),array("limit" => 20,"offset" => 40));
+ * 	$rows = $mole->selectRows("SELECT * FROM articles WHERE source_id=:source_id",[":source_id" => 112233"],["limit" => 20,"offset" => 40]);
  *		foreach($rows as $row){
  *			echo "$row[id]: $row[name]\n";
  *			echo "body:\n";
@@ -33,8 +33,8 @@
  * 	// Nyni lze pouzit nesledujici:
  *		$stmt = $mole->executeQuery(
  *			"UPDATE articles SET bode=EMPTY_CLOB() WHERE id=:id RETURNING body INTO :body",
- *			array(":id" => 3443),
- *			array("execute_statement" => false)
+ *			[":id" => 3443],
+ *			["execute_statement" => false]
  *		);
  *		// A zde uz si nabindovani :body udelat pekne rucne!
  *		OCIFreeStatement($stmt);
@@ -110,8 +110,8 @@ class OracleMole extends DbMole{
 		$options["offset"] = isset($options["offset"]) ? (int)$options["offset"] : null;
 		$options["bind_values"] = isset($options["bind_values"]) ? (bool)$options["bind_values"] : true;
 		$options["execute_statement"] = isset($options["execute_statement"]) ? (bool)$options["execute_statement"] : true;
-		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : [];			// $options["clobs"] = array(":body",":perex");
-		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : [];			// $options["blobs"] = array(":binary_body")
+		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : [];			// $options["clobs"] = [":body",":perex"];
+		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : [];			// $options["blobs"] = [":binary_body"]
 
 		if(isset($options["offset"]) || isset($options["limit"])){
 			if(!isset($options["offset"])){ $options["offset"] = 0; }
@@ -216,12 +216,12 @@ class OracleMole extends DbMole{
 	* @return array						pole asociativnich poli; null v pripade chyby
 	*/
 	function selectRows($query,$bind_ar = [], $options = []){
-		$options = array_merge(array(
+		$options = array_merge([
 			"lowercase_field_names" => true,
 			"limit" => null,
 			"offset" => null,
 			"avoid_recursion" => false,
-		),$options);
+		],$options);
 
 		if(!$options["avoid_recursion"]){
 			return $this->_selectRows($query,$bind_ar,$options);
@@ -265,17 +265,17 @@ class OracleMole extends DbMole{
 	* Prekryta metoda.
 	* Zde se mohou v $options definovat $options["clobs"] a $options["blobs"].
 	*
-	*		$dbmole->insertIntoTable("articles",array(
+	*		$dbmole->insertIntoTable("articles",[
 	*			"id" => $dbmole->selectSequenceNextval('se$articles_id'),
 	*			"name" => "nazev clanku",
 	*			"perex" => "perex clanku",
 	*			"body" => "telicko clanku",
 	*			"create_date" => "2008-01-02 12:33:23",
 	*			"update_date" => "SYSDATE"
-	*		),array(
-	*			"clobs" => array("perex","body"),
-	*			"do_not_escape" => array("update_date")
-	*		));
+	*		],[
+	*			"clobs" => ["perex","body"],
+	*			"do_not_escape" => ["update_date"]
+	*		]);
 	*
 	* Pozor!!!
 	* V polich $options["clobs"] $options["blobs"] se zde uvadeji nazvy poli (nikoli bind klic s prefixem :).
@@ -286,9 +286,9 @@ class OracleMole extends DbMole{
 		$values = (array)$values;
 		$options = (array)$options;
 
-		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : [];			// $options["clobs"] = array("body","perex");
-		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : [];			// $options["blobs"] = array("binary_body")
-		$options["do_not_escape"] = isset($options["do_not_escape"]) ? (array)$options["do_not_escape"] : []; // $options["do_not_escape"] = array("create_date")
+		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : [];			// $options["clobs"] = ["body","perex"];
+		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : [];			// $options["blobs"] = ["binary_body"]
+		$options["do_not_escape"] = isset($options["do_not_escape"]) ? (array)$options["do_not_escape"] : []; // $options["do_not_escape"] = ["create_date"]
 
 		$clobs = $options["clobs"];
 		$blobs = $options["blobs"];

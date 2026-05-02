@@ -6,11 +6,11 @@ class SqlsrvMole extends DbMole {
 	function usesSequencies(){ return true; }
 
 	function selectRows($query,$bind_ar = [], $options = []){
-		$options = array_merge(array(
+		$options = array_merge([
 			"limit" => null,
 			"offset" => null,
 			"avoid_recursion" => false,
-		),$options);
+		],$options);
 
 		if(!$options["avoid_recursion"]){
 			return $this->_selectRows($query,$bind_ar,$options);
@@ -54,9 +54,9 @@ class SqlsrvMole extends DbMole {
 	}
 	
 	function escapeString4Sql($s){
-		return "'".strtr($s,array(
+		return "'".strtr($s,[
 			"'" => "''",
-		))."'";
+		])."'";
 	}
 
 	function _begin(){

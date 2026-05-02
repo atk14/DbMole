@@ -30,9 +30,9 @@
  * Basic query execution
  * ```
  * $query = "SELECT id FROM customers WHERE UPPER(name) = UPPER(:customer_name)";
- * $bind_ary = array(
+ * $bind_ary = [
  * 	":customer_name" => "john",
- * );
+ * ];
  * $customer_ids = $dbmole->selectIntoArray($query, $bind_ary);
  * ```
  *
@@ -193,20 +193,20 @@ class DbMole{
 		static $instance_store_ar;
 
 		if(is_string($options)){
-			$options = array("class_name" => $options);
+			$options = ["class_name" => $options];
 		}elseif(is_null($options)){
 			$options = [];
 		}
 
-		$options += array(
+		$options += [
 			"class_name" => get_called_class()
-		);
+		];
 
-		$tr = array(
+		$tr = [
 			"oracle" => "OracleMole",
 			"mysql" => "MysqlMole",
 			"postgresql" => "PgMole",
-		);
+		];
 		if(isset($tr[$options["class_name"]])){
 			$options["class_name"] = $tr[$options["class_name"]]; // "postgresql" -> "PgMole"
 		}
@@ -360,9 +360,9 @@ class DbMole{
 			$options = ["format" => $options];
 		}
 
-		$options += array(
+		$options += [
 			"format" => null, // "html", "plain", null (auto)
-		);
+		];
 
 		if(is_null($options["format"])){
 			$options["format"] = php_sapi_name()=="cli" ? "plain" : "html";
@@ -384,11 +384,11 @@ class DbMole{
 				$total_time += $itm["time"];
 				$current_query_time += $itm["time"];
 			}
-			$ar[$this->_formatSeconds($current_query_time).$counter] = array(
+			$ar[$this->_formatSeconds($current_query_time).$counter] = [
 				"count" => $itms_count,
 				"query" => $q,
 				"time" => $current_query_time
-			);
+			];
 			$counter++;
 		}
 
@@ -411,19 +411,19 @@ class DbMole{
 		$out = join("\n",$out);
 
 		if($options["format"] == "plain"){
-			$out = strtr($out,array(
+			$out = strtr($out,[
 				"<h3>" => "",
 				"</h3>" => "\n",
 				"<pre>" => "",
 				"</pre>" => "\n",
 				"&times;" => "x",
-			));
+			]);
 			$out = preg_replace('/<.*?'.'>/','',$out); // all other tags
 			$out = preg_replace('/\ntotal time/s','total time',$out);
 			$out = html_entity_decode($out);
-			$out = strtr($out,array(
+			$out = strtr($out,[
 				"&#039;" => "'", // strange, this is not handled by html_entity_decode()
-			));
+			]);
 			$out = trim($out);
 		}
 
@@ -541,12 +541,12 @@ class DbMole{
 	 * @access private
 	 */
 	function _selectRows($query,&$bind_ar, $options = []){
-		$options = array_merge(array(
+		$options = array_merge([
 			"limit" => null,
 			"offset" => null,
 			"cache" => 0, // 0, 600, true, false
 			"recache" => false,
-		),$options);
+		],$options);
 		$options["avoid_recursion"] = true; // Because the selectRows() method directly calls _selectRows() and vice versa, we have this safeguard parameter here
 
 
@@ -726,11 +726,11 @@ class DbMole{
 	 * - limit_sending_rate boolean or numeric (number of seconds); whether email sending rate should be limited or not; default true
 	 */
 	function sendErrorReportToEmail($email_address,$options = []){
-		$options += array(
+		$options += [
 			"report_failed_database_connection" => false,
 			"limit_sending_rate" => true, // bolean or number of seconds (default 300),
 			"sending_lock_file" => null, // "/tmp/dbmole_email_sent_".md5(__DIR__)
-		);
+		];
 
 		if(!$options["report_failed_database_connection"] && preg_match("/^can't connect to database/",$this->getErrorMessage())){
 			return;
@@ -746,12 +746,12 @@ class DbMole{
 			touch($email_lock_file);
 		}
 
-		return sendmail(array(
+		return sendmail([
 			"to" => $email_address,
 			"subject" => "DbMole: error report",
 			"body" => $this->getErrorReport(),
 			"mime_type" => "text/plain",
-		));
+		]);
 	}
 
 	/**
@@ -858,8 +858,8 @@ class DbMole{
 	 * Returns null when result doesn't contain any record or an error occurs.
 	 *
 	 * ```
-	 * $row = $dbmole->selectFirstRow("SELECT * FROM articles WHERE id=:id",array(":id" => $id));
-	 * $row = $dbmole->selectFirstRow("SELECT * FROM articles",[],array("order" => "create_date DESC", "limit" => 1));
+	 * $row = $dbmole->selectFirstRow("SELECT * FROM articles WHERE id=:id",[":id" => $id]);
+	 * $row = $dbmole->selectFirstRow("SELECT * FROM articles",[],["order" => "create_date DESC", "limit" => 1]);
 	 * ```
 	 *
 	 * @param string $query
@@ -868,9 +868,9 @@ class DbMole{
 	 * @return array associative array
 	 */
 	function selectFirstRow($query,$bind_ar = [], $options = []){
-		$options += array(
+		$options += [
 			// "limit" => 1, // This is not possible because of: $dbmole->selectInt("UPDATE articles SET title='New title' WHERE id=1 AND updated_at IS NULL RETURNING id");
-		);
+		];
 		$records = $this->_selectRows($query,$bind_ar,$options);
 		if(!isset($records) || count($records)==0){
 			return null;
@@ -910,12 +910,12 @@ class DbMole{
 	 *
 	 * Basic usage
 	 * ```
-	 * $mole->selectSingleValue("SELECT COUNT(*) FROM articles WHERE id<:id",array(":id" => 3000),array("type" => "integer"));	// takto to bylo vsechno zamysleno
+	 * $mole->selectSingleValue("SELECT COUNT(*) FROM articles WHERE id<:id",[":id" => 3000],["type" => "integer"]);	// takto to bylo vsechno zamysleno
 	 * ```
 	 *
 	 * can be shortened:
 	 * ```
-	 * $mole->selectSingleValue("SELECT COUNT(*) FROM articles WHERE id<:id",array(":id" => 3000),"integer");
+	 * $mole->selectSingleValue("SELECT COUNT(*) FROM articles WHERE id<:id",[":id" => 3000],"integer");
 	 * ```
 	 *
 	 * and can be even more shortened when no bind_ar is passed
@@ -930,11 +930,11 @@ class DbMole{
 	 */
 	function selectSingleValue($query,$bind_ar = [], $options = []){
 		if(is_string($bind_ar)){
-			$options = array("type" => $bind_ar);
+			$options = ["type" => $bind_ar];
 			$bind_ar = [];
 		}
 		if(is_string($options)){
-			$options = array("type" => $options);
+			$options = ["type" => $options];
 		}
 		$ar = $this->selectFirstRow($query,$bind_ar,$options);
 
@@ -1022,7 +1022,7 @@ class DbMole{
 		$value = $this->selectString($query,$bind_ar,$options);
 		if(!isset($value)){ return null; }
 		return
-			in_array(strtoupper($value),array("Y","YES","YUP","T","TRUE","1","ON","E","ENABLE","ENABLED")) ||
+			in_array(strtoupper($value),["Y","YES","YUP","T","TRUE","1","ON","E","ENABLE","ENABLED"]) ||
 			(is_numeric($value) && $value>0);
 	}
 
@@ -1034,14 +1034,14 @@ class DbMole{
 	 * ```
 	 * $article_ids = $dbmole->selectIntoArray("SELECT id FROM articles WHERE source_id=100010");
 	 * ```
-	 * Previous call sets $article_ids to array("233221","233222","233225"...)
+	 * Previous call sets $article_ids to ["233221","233222","233225"...]
 	 *
 	 * ```
 	 * $arr = $dbmole->selectIntoArray("SELECT id,name FROM articles WHERE ...");
 	 * ```
 	 * This call returns array $arr like this
 	 * ```
-	 * array("233221","First article name","233222","second article name"...)
+	 * ["233221","First article name","233222","second article name"...]
 	 * ```
 	 *
 	 * @param string $query
@@ -1051,11 +1051,11 @@ class DbMole{
 	 */
 	function selectIntoArray($query,$bind_ar = [],$options = []){
 		if(is_string($bind_ar)){
-			$options = array("type" => $bind_ar);
+			$options = ["type" => $bind_ar];
 			$bind_ar = [];
 		}
 		if(is_string($options)){
-			$options = array("type" => $options);
+			$options = ["type" => $options];
 		}
 
 		$out = [];
@@ -1084,12 +1084,12 @@ class DbMole{
 	 * ```
 	 * can return for example
 	 * ```
-	 *	array(
+	 *	[
 	 *		"12" => "Nazev 1",
 	 *		"3342" => "Nazev 2",
 	 *		"2311" => "Nazev 3",
 	 *		...
-	 *	)
+	 *	]
 	 * ```
 	 *
 	 * sql specifies more fields and this call
@@ -1098,11 +1098,11 @@ class DbMole{
 	 * ```
 	 * can return this
 	 * ```
-	 *	array(
-	 *		"12" => array("name" => "Nazev 1", "author" => "Jan Tuna"),
-	 *		"3342" => array("name" => "Nazev 2", "author" => "Dr. Kanal"),
+	 *	[
+	 *		"12" => ["name" => "Nazev 1", "author" => "Jan Tuna"],
+	 *		"3342" => ["name" => "Nazev 2", "author" => "Dr. Kanal"],
 	 *		...
-	 *	)
+	 *	]
 	 * ```
 	 *
 	 * sql specifies just one field:
@@ -1112,11 +1112,11 @@ class DbMole{
 	 * ```
 	 * can return this
 	 * ```
-	 *	array(
+	 *	[
 	 *		"12" => "12",
 	 *		"3342" => "3342",
 	 *		...
-	 *	)
+	 *	]
 	 * ```
 	 *	
 	 *
@@ -1153,7 +1153,7 @@ class DbMole{
 	 *
 	 * It can be done with option execute_after_connecting
 	 * ```
-	 *	$dbmole->begin(array("execute_after_connecting" => true));
+	 *	$dbmole->begin(["execute_after_connecting" => true]);
 	 * ```
 	 *
 	 * @param array $options
@@ -1161,9 +1161,9 @@ class DbMole{
 	 * @return bool
 	 */
 	final function begin($options = []){
-		$options += array(
+		$options += [
 			"execute_after_connecting" => DBMOLE_AUTOMATIC_DELAY_TRANSACTION_BEGINNING_AFTER_CONNECTION,
-		);
+		];
 		if($options["execute_after_connecting"] && !$this->isConnected()){
 			$this->_BeginTransactionDelayed = true;
 			return true;
@@ -1223,11 +1223,11 @@ class DbMole{
 	 * Takes an associative array of column => value pairs and creates a new record with those values in given table.
 	 *
 	 * ```
-	 *	$dbmole->insertIntoTable("comments",array(
+	 *	$dbmole->insertIntoTable("comments",[
 	 *		"title" => "Titulek",
 	 *		"author" => "Yarri",
 	 *		"body" => "text prispevku"
-	 *	));
+	 *	]);
 	 * ```
 	 *
 	 * @param string $table_name
@@ -1240,7 +1240,7 @@ class DbMole{
 		$values = (array)$values;
 
 		if(!isset($options["do_not_escape"])){ $options["do_not_escape"] = []; } 
-		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = array($options["do_not_escape"]); }
+		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = [$options["do_not_escape"]]; }
 		
 		$query_fields = [];
 		$query_values = [];
@@ -1264,16 +1264,16 @@ class DbMole{
 	 *
 	 * ```
 	 * $dbmole->insertOrUpdateRecord("persons",
-	 * 	array(
+	 * 	[
 	 * 		"id" => 1000,
 	 * 		"firstname" => "John",
 	 * 		"surname" => "Blbec",
 	 * 		"updated" => "NOW()"
-	 * 	),
-	 * 	array(
+	 * 	],
+	 * 	[
 	 * 		"id_field" => "id",
-	 * 		"do_not_escape" => array("updated")
-	 * 	)
+	 * 		"do_not_escape" => ["updated"]
+	 * 	]
 	 * );
 	 * ```
 	 *
@@ -1289,17 +1289,17 @@ class DbMole{
 		// nazev policka, ktere je rozhodujici, zda zaznam existuje nebo nikoli
 		$options["id_field"] = isset($options["id_field"]) ? (string)$options["id_field"] : "id";
 		if(!isset($options["do_not_escape"])){ $options["do_not_escape"] = []; } 
-		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = array($options["do_not_escape"]); }
+		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = [$options["do_not_escape"]]; }
 
 		$id_field = $options["id_field"];
 		$id_value = $values[$id_field];
 
 		unset($options["id_field"]); // dale toto nastaveni uz neni nutne
 
-		// TODO: tady se zatim vubec neresi to, ze muze byt nastaveno $options["do_not_escape"] = array("id")
+		// TODO: tady se zatim vubec neresi to, ze muze byt nastaveno $options["do_not_escape"] = ["id"]
 		$_options = $options;
 		$_options["type"] = "integer";
-		$count = $this->selectSingleValue("SELECT COUNT(*) FROM ".$this->escapeTableName4Sql($table_name)." WHERE ".$this->escapeColumnName4Sql($id_field)."=:id_value",array(":id_value" => $id_value),$_options);
+		$count = $this->selectSingleValue("SELECT COUNT(*) FROM ".$this->escapeTableName4Sql($table_name)." WHERE ".$this->escapeColumnName4Sql($id_field)."=:id_value",[":id_value" => $id_value],$_options);
 
 		if($count==0){
 
@@ -1321,7 +1321,7 @@ class DbMole{
 					$update_ar[] = $this->escapeColumnName4Sql($_key)."=$_value";
 				}
 			}
-			if(count($update_ar)==0){ return true; } // je to podivne, ale tady se nic nemeni; nekdo vola nmetodu nesmyslne ve stylu: $dbmole->insertOrUpdateRecord("persons",array("id" => 20));
+			if(count($update_ar)==0){ return true; } // je to podivne, ale tady se nic nemeni; nekdo vola nmetodu nesmyslne ve stylu: $dbmole->insertOrUpdateRecord("persons",["id" => 20]);
 			return $this->doQuery("UPDATE ".$this->escapeTableName4Sql($table_name)." SET ".join(", ",$update_ar)." WHERE ".$this->escapeColumnName4Sql($id_field)."=:$id_field",$bind_ar,$options);
 
 		}
@@ -1365,16 +1365,16 @@ class DbMole{
 	 * To prevent against a SQL attack you should not write conditions directly to query string but you should use the form with $bind_ar to sanitize the input data.
 	 *
 	 * ```
-	 * $dbmole->executeQuery("SELECT * FROM articles WHERE id=:id",array(":id" => 123));
+	 * $dbmole->executeQuery("SELECT * FROM articles WHERE id=:id",[":id" => 123]);
 	 * ```
 	 *
 	 * Also arrays can be used as bind_ar
 	 * ```
-	 * $dbmole->executeQuery("SELECT * FROM articles WHERE id IN :ids",array(":ids" => array(123,124,125)));
+	 * $dbmole->executeQuery("SELECT * FROM articles WHERE id IN :ids",[":ids" => [123,124,125]]);
 	 * ```
 	 * which will be internally transformed into this
 	 * ```
-	 * $dbmole->executeQuery("SELECT * FROM articles WHERE id IN (:ids_0, :ids_1, :ids_2)",array(":ids_0" => 123, ":ids_1" => 124, ":ids_2" => 125));
+	 * $dbmole->executeQuery("SELECT * FROM articles WHERE id IN (:ids_0, :ids_1, :ids_2)",[":ids_0" => 123, ":ids_1" => 124, ":ids_2" => 125]);
 	 * ```
 	 *
 	 * In $options array the execution mode can be set:
@@ -1578,10 +1578,10 @@ class DbMole{
 			$start_utime = $this->_start_utime;
 			$stop_utime = microtime(true);
 
-			self::$__DMOLE_STATISTICS__[$this->getQuery()][] = array(
+			self::$__DMOLE_STATISTICS__[$this->getQuery()][] = [
 				"time" => $stop_utime - $start_utime,
 				"bind_ar" => $this->getBindAr()
-			);
+			];
 		}
 
 		//echo "<pre>";
@@ -1645,10 +1645,10 @@ class DbMole{
 		unset($options["type"]);
 
 		return $this->_CacheDir."/".md5($query)."/".md5(
-			serialize(array(
+			serialize([
 				"bind_ar" => $bind_ar,
 				"options" => $options
-			))
+			])
 		);
 	}
 
@@ -1663,7 +1663,7 @@ class DbMole{
 		if(is_numeric($value)){
 			return (bool)$value;
 		}
-		return in_array(strtolower($value),array("t","true","y"));
+		return in_array(strtolower($value),["t","true","y"]);
 	}
 
 	/**
@@ -1690,30 +1690,30 @@ class DbMole{
 
 	function _parseVersion($version,$options){
 		if(is_string($options)){
-			$options = array($options => true);
+			$options = [$options => true];
 		}
-		$options += array(
+		$options += [
 			"as_array" => false,
 			"as_float" => false,
 
 			// options for conversion to float
 			"minor_number_divider" => 100,
 			"patch_number_divider" => 100000,
-		);
+		];
 
 		$version = preg_replace('/^([^ ]+) .*/','\1',$version); // "11.2 (Ubuntu 11.2-1.pgdg16.04+1)" -> "11.2"
 
 		if(strlen($version)==0){ return null; }
 		if($options["as_array"]){
 			$ary = explode(".",$version);
-			return array(
+			return [
 				"major" => (int)$ary[0],
 				"minor" => isset($ary[1]) ? (int)$ary[1] : 0,
 				"patch" => isset($ary[2]) ? (int)$ary[2] : 0,
-			);
+			];
 		}
 		if($options["as_float"]){
-			$ar = $this->_parseVersion($version,array("as_array" => true));
+			$ar = $this->_parseVersion($version,["as_array" => true]);
 			$out = (float)($ar["major"] + ($ar["minor"] / $options["minor_number_divider"]) + ($ar["patch"] / $options["patch_number_divider"]));
 			$out = round($out,log10(max($options["minor_number_divider"],$options["patch_number_divider"])));
 			return $out;

@@ -15,11 +15,11 @@ class MysqlMole extends DbMole{
 	}
 
 	function selectRows($query,$bind_ar = [], $options = []){
-		$options = array_merge(array(
+		$options = array_merge([
 			"limit" => null,
 			"offset" => null,
 			"avoid_recursion" => false,
-		),$options);
+		],$options);
 
 		if(!$options["avoid_recursion"]){
 			return $this->_selectRows($query,$bind_ar,$options);
