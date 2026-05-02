@@ -112,7 +112,7 @@ class DbMole{
 	 *
 	 * @var array
 	 */
-	protected $_BindAr = array();
+	protected $_BindAr = [];
 
 	/**
 	 * Parameters used by query execution.
@@ -121,7 +121,7 @@ class DbMole{
 	 *
 	 * @var array
 	 */
-	protected $_Options = array();
+	protected $_Options = [];
 
 	/**
 	 * Number of executed queries since connection to the database.
@@ -189,13 +189,13 @@ class DbMole{
 	 * @param string $class_name
 	 * @return DbMole
 	 */
-	static function &GetInstance($configuration_name = "default",$options = array()){
+	static function &GetInstance($configuration_name = "default",$options = []){
 		static $instance_store_ar;
 
 		if(is_string($options)){
 			$options = array("class_name" => $options);
 		}elseif(is_null($options)){
-			$options = array();
+			$options = [];
 		}
 
 		$options += array(
@@ -216,8 +216,8 @@ class DbMole{
 		$configuration_name = (string)$configuration_name;
 		$class_name = (string)$class_name;
 
-		if(!isset($instance_store_ar)){ $instance_store_ar = array(); }
-		if(!isset($instance_store_ar[$class_name])){ $instance_store_ar[$class_name] = array(); }
+		if(!isset($instance_store_ar)){ $instance_store_ar = []; }
+		if(!isset($instance_store_ar[$class_name])){ $instance_store_ar[$class_name] = []; }
 		
 		if(!isset($instance_store_ar[$class_name][$configuration_name])){
 			$out = new $class_name($configuration_name);
@@ -351,7 +351,7 @@ class DbMole{
 	 *
 	 * @return string
 	 */
-	function getStatistics($options = array()){
+	function getStatistics($options = []){
 		if(!defined("DBMOLE_COLLECT_STATISTICS") || !constant("DBMOLE_COLLECT_STATISTICS")){
 			return "Statistical data is not collected";
 		}
@@ -368,9 +368,9 @@ class DbMole{
 			$options["format"] = php_sapi_name()=="cli" ? "plain" : "html";
 		}
 
-		if(!isset(self::$__DMOLE_STATISTICS__)){ self::$__DMOLE_STATISTICS__ = array(); }
+		if(!isset(self::$__DMOLE_STATISTICS__)){ self::$__DMOLE_STATISTICS__ = []; }
 
-		$ar = array();
+		$ar = [];
 
 		$total_queries = 0;
 		$total_time = 0.0;
@@ -394,7 +394,7 @@ class DbMole{
 
 		krsort($ar,SORT_NUMERIC);
 
-		$out = array();
+		$out = [];
 		$out[] = "<div style=\"text-align: left;\">";
 		$out[] = "<h3>total queries: $total_queries</h3>";
 		$out[] = "<h3>total time: ".$this->_formatSeconds($total_time)."s</h3>";
@@ -540,7 +540,7 @@ class DbMole{
 	 * @ignore
 	 * @access private
 	 */
-	function _selectRows($query,&$bind_ar, $options = array()){
+	function _selectRows($query,&$bind_ar, $options = []){
 		$options = array_merge(array(
 			"limit" => null,
 			"offset" => null,
@@ -566,7 +566,7 @@ class DbMole{
 			}
 
 			if(isset($limit) && $limit==0){
-				return array();
+				return [];
 			}
 
 			$options["offset"] = $offset;
@@ -667,7 +667,7 @@ class DbMole{
 	 * @return string
 	 */
 	function getErrorReport(){
-		$out = array();
+		$out = [];
 
 		$out[] = "DbMole error report";
 		$out[] = "";
@@ -725,7 +725,7 @@ class DbMole{
 	 * - report_failed_database_connection boolean whether send report about failed database connection
 	 * - limit_sending_rate boolean or numeric (number of seconds); whether email sending rate should be limited or not; default true
 	 */
-	function sendErrorReportToEmail($email_address,$options = array()){
+	function sendErrorReportToEmail($email_address,$options = []){
 		$options += array(
 			"report_failed_database_connection" => false,
 			"limit_sending_rate" => true, // bolean or number of seconds (default 300),
@@ -772,8 +772,8 @@ class DbMole{
 	function _reset(){
 		$this->_ErrorMessage = null;
 		$this->_Query = "";
-		$this->_BindAr = array();
-		$this->_Options = array();
+		$this->_BindAr = [];
+		$this->_Options = [];
 	}
 
 	/**
@@ -816,7 +816,7 @@ class DbMole{
 	 * @param array $options
 	 * @return boolean true -> query executed with success, false -> error
 	 */
-	function doQuery($query,$bind_ar = array(), $options = array()){
+	function doQuery($query,$bind_ar = [], $options = []){
 		$result = $this->executeQuery($query,$bind_ar,$options);
 		if(!$result){ return false; }
 		$this->_freeResult($result);
@@ -844,7 +844,7 @@ class DbMole{
 	 */
 	function _getAffectedRows(){ return null; }
 
-	function selectRows($query,$bind_ar = array(), $options = array()){
+	function selectRows($query,$bind_ar = [], $options = []){
 		$class_name = get_class($this);
 		if($class_name=="DbMole"){
 			throw new LogicException("Method selectRows() must be called through a subclass");
@@ -859,7 +859,7 @@ class DbMole{
 	 *
 	 * ```
 	 * $row = $dbmole->selectFirstRow("SELECT * FROM articles WHERE id=:id",array(":id" => $id));
-	 * $row = $dbmole->selectFirstRow("SELECT * FROM articles",array(),array("order" => "create_date DESC", "limit" => 1));
+	 * $row = $dbmole->selectFirstRow("SELECT * FROM articles",[],array("order" => "create_date DESC", "limit" => 1));
 	 * ```
 	 *
 	 * @param string $query
@@ -867,7 +867,7 @@ class DbMole{
 	 * @param array $options
 	 * @return array associative array
 	 */
-	function selectFirstRow($query,$bind_ar = array(), $options = array()){
+	function selectFirstRow($query,$bind_ar = [], $options = []){
 		$options += array(
 			// "limit" => 1, // This is not possible because of: $dbmole->selectInt("UPDATE articles SET title='New title' WHERE id=1 AND updated_at IS NULL RETURNING id");
 		);
@@ -887,7 +887,7 @@ class DbMole{
 	 * @return array
 	 * @see selectFirstRow
 	 */
-	function selectRow($query,$bind_ar = array(),$options = array()){
+	function selectRow($query,$bind_ar = [],$options = []){
 		return $this->selectFirstRow($query,$bind_ar,$options);
 	}
 	
@@ -928,10 +928,10 @@ class DbMole{
 	 * @param array|string $options	when string it will be used as if given $options["type"]
 	 * @return mixed
 	 */
-	function selectSingleValue($query,$bind_ar = array(), $options = array()){
+	function selectSingleValue($query,$bind_ar = [], $options = []){
 		if(is_string($bind_ar)){
 			$options = array("type" => $bind_ar);
-			$bind_ar = array();
+			$bind_ar = [];
 		}
 		if(is_string($options)){
 			$options = array("type" => $options);
@@ -961,7 +961,7 @@ class DbMole{
 	 * @param array $options
 	 * @return mixed
 	 */
-	function selectValue($query,$bind_ar = array(), $options = array()){
+	function selectValue($query,$bind_ar = [], $options = []){
 		return $this->selectSingleValue($query,$bind_ar,$options);
 	}
 
@@ -974,7 +974,7 @@ class DbMole{
 	 * @return integer
 	 * @see selectSingleValue
 	 */
-	function selectInt($query,$bind_ar = array(),$options = array()){
+	function selectInt($query,$bind_ar = [],$options = []){
 		$options["type"] = "integer";
 		return $this->selectSingleValue($query,$bind_ar,$options);
 	}
@@ -988,7 +988,7 @@ class DbMole{
 	 * @return string
 	 * @see selectSingleValue
 	 */
-	function selectString($query,$bind_ar = array(),$options = array()){
+	function selectString($query,$bind_ar = [],$options = []){
 		$options["type"] = "string";
 		return $this->selectSingleValue($query,$bind_ar,$options);
 	}
@@ -1002,7 +1002,7 @@ class DbMole{
 	 * @return float
 	 * @see selectSingleValue
 	 */
-	function selectFloat($query,$bind_ar = array(),$options = array()){
+	function selectFloat($query,$bind_ar = [],$options = []){
 		$options["type"] = "float";
 		return $this->selectSingleValue($query,$bind_ar,$options);
 	}
@@ -1018,7 +1018,7 @@ class DbMole{
 	 * @return boolean
 	 * @see selectSingleValue
 	 */
-	function selectBool($query,$bind_ar = array(),$options = array()){
+	function selectBool($query,$bind_ar = [],$options = []){
 		$value = $this->selectString($query,$bind_ar,$options);
 		if(!isset($value)){ return null; }
 		return
@@ -1049,16 +1049,16 @@ class DbMole{
 	 * @param array|string $options		when string given, it is converted to $options["type"]
 	 * @return array
 	 */
-	function selectIntoArray($query,$bind_ar = array(),$options = array()){
+	function selectIntoArray($query,$bind_ar = [],$options = []){
 		if(is_string($bind_ar)){
 			$options = array("type" => $bind_ar);
-			$bind_ar = array();
+			$bind_ar = [];
 		}
 		if(is_string($options)){
 			$options = array("type" => $options);
 		}
 
-		$out = array();
+		$out = [];
 
 		$rows = $this->_selectRows($query,$bind_ar,$options);
 		if(!is_array($rows)){ return null; }
@@ -1125,8 +1125,8 @@ class DbMole{
 	 * @param array $options
 	 * @return array
 	 */
-	function selectIntoAssociativeArray($query,$bind_ar = array(), $options = array()){
-		$out = array();
+	function selectIntoAssociativeArray($query,$bind_ar = [], $options = []){
+		$out = [];
 		$rows = $this->selectRows($query,$bind_ar,$options);
 		if(!$rows){ return $out; }
 		$keys = array_keys($rows[0]);
@@ -1160,7 +1160,7 @@ class DbMole{
 	 * - execute_after_connecting - delays connecting to database to the moment when it is needed
 	 * @return bool
 	 */
-	final function begin($options = array()){
+	final function begin($options = []){
 		$options += array(
 			"execute_after_connecting" => DBMOLE_AUTOMATIC_DELAY_TRANSACTION_BEGINNING_AFTER_CONNECTION,
 		);
@@ -1235,16 +1235,16 @@ class DbMole{
 	 * @param array $options	associative array
 	 * @return bool
 	 */
-	function insertIntoTable($table_name,$values,$options = array()){
+	function insertIntoTable($table_name,$values,$options = []){
 		$table_name = (string)$table_name;
 		$values = (array)$values;
 
-		if(!isset($options["do_not_escape"])){ $options["do_not_escape"] = array(); } 
+		if(!isset($options["do_not_escape"])){ $options["do_not_escape"] = []; } 
 		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = array($options["do_not_escape"]); }
 		
-		$query_fields = array();
-		$query_values = array();
-		$bind_ar = array();
+		$query_fields = [];
+		$query_values = [];
+		$bind_ar = [];
 		foreach($values as $_field_name => $_value){	
 			$query_fields[] = $this->escapeColumnName4Sql($_field_name);
 			if(in_array($_field_name,$options["do_not_escape"])){
@@ -1282,13 +1282,13 @@ class DbMole{
 	 * @param array $options
 	 * @return bool
 	 */
-	function insertOrUpdateRecord($table_name,$values,$options = array()){
+	function insertOrUpdateRecord($table_name,$values,$options = []){
 		$table_name = (string)$table_name;
 		$values = (array)$values;
 
 		// nazev policka, ktere je rozhodujici, zda zaznam existuje nebo nikoli
 		$options["id_field"] = isset($options["id_field"]) ? (string)$options["id_field"] : "id";
-		if(!isset($options["do_not_escape"])){ $options["do_not_escape"] = array(); } 
+		if(!isset($options["do_not_escape"])){ $options["do_not_escape"] = []; } 
 		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = array($options["do_not_escape"]); }
 
 		$id_field = $options["id_field"];
@@ -1307,8 +1307,8 @@ class DbMole{
 
 		}else{
 
-			$update_ar = array();
-			$bind_ar = array();
+			$update_ar = [];
+			$bind_ar = [];
 			foreach($values as $_key => $_value){	
 				/*if(!isset($options["do_not_escape"]["$_key"])){
 					$bind_ar[":$_key"] = is_object($_value) ? $_value->getId() : $_value;
@@ -1389,19 +1389,19 @@ class DbMole{
 	 * @param array $options
 	 * @return statement or null on error
 	 */
-	function executeQuery($query,$bind_ar = array(),$options = array()){
+	function executeQuery($query,$bind_ar = [],$options = []){
 		$query = (string)$query;
 		$bind_ar = (array)$bind_ar;
 		$options = (array)$options;
 
 		// prevod prip. poli v $bind_ar
-		$b_ar = array();
-		$tr = array();
+		$b_ar = [];
+		$tr = [];
 		$arrays_in_bind_ar = false;
 		foreach($bind_ar as $key => $value){
 			if(is_array($value)){
 				$arrays_in_bind_ar = true;
-				$new_keys = array();
+				$new_keys = [];
 				$i = 0;
 				foreach($value as $_v){
 					$b_ar["{$key}_$i"] = $_v;
@@ -1570,9 +1570,9 @@ class DbMole{
 	 */
 	function _hookAfterQueryExecution(){
 		if(defined("DBMOLE_COLLECT_STATISTICS") && constant("DBMOLE_COLLECT_STATISTICS")){
-			if(!isset(self::$__DMOLE_STATISTICS__)){ self::$__DMOLE_STATISTICS__ = array(); }
+			if(!isset(self::$__DMOLE_STATISTICS__)){ self::$__DMOLE_STATISTICS__ = []; }
 			if(!isset(self::$__DMOLE_STATISTICS__[$this->getQuery()])){
-				self::$__DMOLE_STATISTICS__[$this->getQuery()] = array();
+				self::$__DMOLE_STATISTICS__[$this->getQuery()] = [];
 			}
 
 			$start_utime = $this->_start_utime;
@@ -1673,7 +1673,7 @@ class DbMole{
 	 *	var_dump($dbmole->getDatabaseServerVersion("as_array");) // shortcut
 	 *	echo $dbmole->getDatabaseServerVersion("as_float"); // 9.6 - only major and minor
 	 */
-	final function getDatabaseServerVersion($options = array()){
+	final function getDatabaseServerVersion($options = []){
 		return $this->_parseVersion($this->_getDatabaseServerVersion(),$options);
 	}
 
@@ -1684,7 +1684,7 @@ class DbMole{
 	 *	var_dump($dbmole->getDatabaseClientVersion("as_array");) // shortcut
 	 *	echo $dbmole->getDatabaseClientVersion("as_float"); // 9.05016
 	 */
-	final function getDatabaseClientVersion($options = array()){
+	final function getDatabaseClientVersion($options = []){
 		return $this->_parseVersion($this->_getDatabaseClientVersion(),$options);
 	}
 

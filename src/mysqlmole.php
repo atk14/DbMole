@@ -1,7 +1,7 @@
 <?php
 class MysqlMole extends DbMole{
 
-	static function &GetInstance($configuration_name = "default",$options = array()){
+	static function &GetInstance($configuration_name = "default",$options = []){
 		$options["class_name"] = "MysqlMole";
 		return parent::GetInstance($configuration_name,$options);
 	}
@@ -14,7 +14,7 @@ class MysqlMole extends DbMole{
 		return mysqli_insert_id($connection);
 	}
 
-	function selectRows($query,$bind_ar = array(), $options = array()){
+	function selectRows($query,$bind_ar = [], $options = []){
 		$options = array_merge(array(
 			"limit" => null,
 			"offset" => null,
@@ -28,7 +28,7 @@ class MysqlMole extends DbMole{
 
 		if(isset($options["offset"]) || isset($options["limit"])){
 			if(!isset($options["offset"])){ $options["offset"] = 0; }
-			$_cond = array();
+			$_cond = [];
 			if(isset($options["limit"])){
 				$_cond[] = "LIMIT :limit____";
 				$bind_ar[":limit____"] = $options["limit"];
@@ -44,7 +44,7 @@ class MysqlMole extends DbMole{
 
 		if(!$result){ return null; }
 
-		$out = array();
+		$out = [];
 
 		while($row = mysqli_fetch_assoc($result)){
 			$out[] = $row;
@@ -55,7 +55,7 @@ class MysqlMole extends DbMole{
 	}
 
 	function escapeColumnName4Sql($column_name){
-		static $cache = array();
+		static $cache = [];
 		$c_key = (string)$column_name;
 		if(!isset($cache[$c_key])){
 			$column_name = str_replace("\0", "", $column_name); // remove null byte

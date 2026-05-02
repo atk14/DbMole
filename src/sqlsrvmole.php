@@ -5,7 +5,7 @@ class SqlsrvMole extends DbMole {
 
 	function usesSequencies(){ return true; }
 
-	function selectRows($query,$bind_ar = array(), $options = array()){
+	function selectRows($query,$bind_ar = [], $options = []){
 		$options = array_merge(array(
 			"limit" => null,
 			"offset" => null,
@@ -19,7 +19,7 @@ class SqlsrvMole extends DbMole {
 
 		if(isset($options["offset"]) || isset($options["limit"])){
 			if(!isset($options["offset"])){ $options["offset"] = 0; }
-			$_cond = array();
+			$_cond = [];
 			if(isset($options["offset"])){
 				$_cond[] = "OFFSET :offset____ ROWS";
 				$bind_ar[":offset____"] = $options["offset"];
@@ -35,7 +35,7 @@ class SqlsrvMole extends DbMole {
 
 		if(!$result){ return null; }
 
-		$out = array();
+		$out = [];
 
 		while($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)){
 			$out[] = $row;
@@ -97,7 +97,7 @@ class SqlsrvMole extends DbMole {
 	function _getDbLastErrorMessage(){
 		//$connection = $this->_getDbConnect();
 		if($errs = sqlsrv_errors()){
-			$messages = array();
+			$messages = [];
 			foreach($errs as $err){
 				$messages[] = "$err[message] (SQLSTATE=$err[SQLSTATE], code=$err[code])";
 			}

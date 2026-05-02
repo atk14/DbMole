@@ -62,7 +62,7 @@ class OracleMole extends DbMole{
 	* @param string $configuration_name		"default" nebo "ov"
 	* @return DbMole									nebo null
 	*/
-	static function &GetInstance($configuration_name = "default",$options = array()){
+	static function &GetInstance($configuration_name = "default",$options = []){
 		$options["class_name"] = "OracleMole";
 		return parent::GetInstance($configuration_name,$options);
 	}
@@ -110,12 +110,12 @@ class OracleMole extends DbMole{
 		$options["offset"] = isset($options["offset"]) ? (int)$options["offset"] : null;
 		$options["bind_values"] = isset($options["bind_values"]) ? (bool)$options["bind_values"] : true;
 		$options["execute_statement"] = isset($options["execute_statement"]) ? (bool)$options["execute_statement"] : true;
-		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : array();			// $options["clobs"] = array(":body",":perex");
-		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : array();			// $options["blobs"] = array(":binary_body")
+		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : [];			// $options["clobs"] = array(":body",":perex");
+		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : [];			// $options["blobs"] = array(":binary_body")
 
 		if(isset($options["offset"]) || isset($options["limit"])){
 			if(!isset($options["offset"])){ $options["offset"] = 0; }
-			$_cond = array();
+			$_cond = [];
 			if(isset($options["offset"])){
 				$_cond[] = "rnum____>:offset____";
 				$bind_ar[":offset____"] = $options["offset"];
@@ -155,7 +155,7 @@ class OracleMole extends DbMole{
 		}
 
 		// bindovani promennych
-		$lobs = array();
+		$lobs = [];
 		if($options["bind_values"]){
 			foreach(array_keys($bind_ar) as $key){
 				//if(is_object($bind_ar[$key])){ $bind_ar[$key] = $bind_ar[$key]->getId(); }
@@ -215,7 +215,7 @@ class OracleMole extends DbMole{
 	* @param array $options
 	* @return array						pole asociativnich poli; null v pripade chyby
 	*/
-	function selectRows($query,$bind_ar = array(), $options = array()){
+	function selectRows($query,$bind_ar = [], $options = []){
 		$options = array_merge(array(
 			"lowercase_field_names" => true,
 			"limit" => null,
@@ -231,11 +231,11 @@ class OracleMole extends DbMole{
 
 		if(!$stmt){ return null; }
 
-		$out = array();
+		$out = [];
 
 		while(OCIFetchInto($stmt,$row,OCI_ASSOC + OCI_RETURN_NULLS)){
 			unset($row["RNUM____"]); // vpripade, ze bylo pouzito omezeni vybery pomoci $options["limit"] nebo $options["offset"], je ve vysledu RNUM____
-			$_row = array();
+			$_row = [];
 			foreach($row as $_key => $_value){
 				if(is_object($_value)){
 					$_value = $_value->load();
@@ -281,28 +281,28 @@ class OracleMole extends DbMole{
 	* V polich $options["clobs"] $options["blobs"] se zde uvadeji nazvy poli (nikoli bind klic s prefixem :).
 	* Uvnitr fce jsou nazvy poli prevedeny na bind klice.
 	*/
-	function insertIntoTable($table_name,$values,$options = array()){
+	function insertIntoTable($table_name,$values,$options = []){
 		$table_name = (string)$table_name;
 		$values = (array)$values;
 		$options = (array)$options;
 
-		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : array();			// $options["clobs"] = array("body","perex");
-		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : array();			// $options["blobs"] = array("binary_body")
-		$options["do_not_escape"] = isset($options["do_not_escape"]) ? (array)$options["do_not_escape"] : array(); // $options["do_not_escape"] = array("create_date")
+		$options["clobs"] = isset($options["clobs"]) ? (array)$options["clobs"] : [];			// $options["clobs"] = array("body","perex");
+		$options["blobs"] = isset($options["blobs"]) ? (array)$options["blobs"] : [];			// $options["blobs"] = array("binary_body")
+		$options["do_not_escape"] = isset($options["do_not_escape"]) ? (array)$options["do_not_escape"] : []; // $options["do_not_escape"] = array("create_date")
 
 		$clobs = $options["clobs"];
 		$blobs = $options["blobs"];
 		$do_not_escape = $options["do_not_escape"];
 
-		$options["clobs"] = array();
-		$options["blobs"] = array();
-		$options["do_not_escape"] = array();
+		$options["clobs"] = [];
+		$options["blobs"] = [];
+		$options["do_not_escape"] = [];
 
-		$table_fields = array();
-		$table_values = array();
-		$bind_ar = array();
-		$lob_fields = array();
-		$lob_bind_keys = array();
+		$table_fields = [];
+		$table_values = [];
+		$bind_ar = [];
+		$lob_fields = [];
+		$lob_bind_keys = [];
 
 		foreach($values as $field => $value){	
 			$table_fields[] = $field;
