@@ -377,14 +377,15 @@ class DbMole{
 
 		$counter = 1;
 		foreach(self::$__DMOLE_STATISTICS__ as $q => $itms){	
-			$total_queries += sizeof($itms);
+			$itms_count = sizeof($itms);
+			$total_queries += $itms_count;
 			$current_query_time = 0.0;
-			foreach($itms as $itm){	
+			foreach($itms as $itm){
 				$total_time += $itm["time"];
 				$current_query_time += $itm["time"];
 			}
 			$ar[$this->_formatSeconds($current_query_time).$counter] = array(
-				"count" => sizeof($itms),
+				"count" => $itms_count,
 				"query" => $q,
 				"time" => $current_query_time
 			);
