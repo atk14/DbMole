@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to the DbMole Project will be documented in this file.
 
+## [1.2.2] - 2026-05-02
+
+* 4ca897b - Added iterateRows() method
+* Code cleaned & refactored
+
 ## [1.2.1] - 2026-05-01
 
 * 6287266 - Small refactoring
