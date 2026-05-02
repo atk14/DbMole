@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to the DbMole Project will be documented in this file.
 
+## [1.2.3] - 2026-05-02
+
+* 3b8e66b - Fix for PHP 5.6
+
 ## [1.2.2] - 2026-05-02
 
 * 4ca897b - Added iterateRows() method
