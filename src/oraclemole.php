@@ -256,7 +256,7 @@ class OracleMole extends DbMole{
 
 		if(!$stmt){ return null; }
 
-		$gen = (function() use($stmt, $options) {
+		$gen = function() use($stmt, $options) {
 			while(OCIFetchInto($stmt,$row,OCI_ASSOC + OCI_RETURN_NULLS)){
 				unset($row["RNUM____"]);
 				$_row = [];
@@ -273,9 +273,9 @@ class OracleMole extends DbMole{
 				yield $_row;
 			}
 			oci_free_statement($stmt);
-		})();
+		};
 
-		return $gen;
+		return $gen();
 	}
 
 	function SelectSequenceNextval($sequence_name){

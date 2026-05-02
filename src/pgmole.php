@@ -111,16 +111,16 @@ class PgMole Extends DbMole{
 
 		if(!$result){ return null; }
 
-		$gen = (function() use($result) {
+		$gen = function() use($result) {
 			while(1){
 				$row = pg_fetch_assoc($result);
 				if($row === false){ break; }
 				yield $row;
 			}
 			pg_free_result($result);
-		})();
+		};
 
-		return $gen;
+		return $gen();
 	}
 
 	function selectSequenceNextval($sequence_name){
