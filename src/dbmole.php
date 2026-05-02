@@ -1555,8 +1555,7 @@ class DbMole{
 	 */
 	function _hookBeforeQueryExecution(){
 		if(defined("DBMOLE_COLLECT_STATISTICS") && constant("DBMOLE_COLLECT_STATISTICS")){
-			list($usec, $sec) = explode(" ", microtime());
-			$this->_start_utime = ((float)$usec + (float)$sec);
+			$this->_start_utime = microtime(true);
 		}
 	}
 
@@ -1572,8 +1571,7 @@ class DbMole{
 			}
 
 			$start_utime = $this->_start_utime;
-			list($usec, $sec) = explode(" ", microtime());
-			$stop_utime = ((float)$usec + (float)$sec);
+			$stop_utime = microtime(true);
 
 			self::$__DMOLE_STATISTICS__[$this->getQuery()][] = array(
 				"time" => $stop_utime - $start_utime,
