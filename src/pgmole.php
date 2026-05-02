@@ -75,12 +75,12 @@ class PgMole Extends DbMole{
 
 		$out = array();
 
-		$num_rows = pg_num_rows($result);
-
-		for($i=0;$i<$num_rows;$i++){
-			$row = pg_fetch_row($result,$i,PGSQL_ASSOC);
+		while(1){
+			$row = pg_fetch_assoc($result);
+			if($row === false){ break; }
 			$out[] = $row;
 		}
+
 		pg_free_result($result);
 
 		return $out;
