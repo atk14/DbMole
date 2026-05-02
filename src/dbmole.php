@@ -1520,6 +1520,7 @@ class DbMole{
 		foreach($bind_ar as &$value){
 			$value = $this->escapeValue4Sql($value);
 		}
+		unset($value);
 
 		$query_to_execute = strtr($query,$bind_ar);
 
