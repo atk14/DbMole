@@ -137,7 +137,6 @@ class PgMole Extends DbMole{
 		// Filtering out parameters that are not used in the query
 		$bind_ar = [];
 		foreach($this->_BindAr as $key => $value){
-			if(strpos($query,$key)===false){ continue; }
 			if(!preg_match('/'.preg_quote($key,'/').'\b/',$query)){ continue; }
 			$bind_ar[$key] = $value;
 		}
