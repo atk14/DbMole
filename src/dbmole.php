@@ -1127,16 +1127,18 @@ class DbMole{
 	function selectIntoAssociativeArray($query,$bind_ar = array(), $options = array()){
 		$out = array();
 		$rows = $this->selectRows($query,$bind_ar,$options);
+		if(!$rows){ return $out; }
+		$keys = array_keys($rows[0]);
+		$num_keys = count($keys);
 		foreach($rows as $row){
-			$keys = array_keys($row);
-			if(sizeof($keys)==2){
+			if($num_keys==2){
 				$out[$row[$keys[0]]] = $row[$keys[1]];
-			}elseif(sizeof($keys)==1){
+			}elseif($num_keys==1){
 				$out[$row[$keys[0]]] = $row[$keys[0]];
 			}else{
 				$k = $row[$keys[0]];
 				unset($row[$keys[0]]);
-				$out[$k] = $row; 
+				$out[$k] = $row;
 			}
 		}
 		return $out;
