@@ -37,7 +37,7 @@
  *			["execute_statement" => false]
  *		);
  *		// A zde uz si nabindovani :body udelat pekne rucne!
- *		OCIFreeStatement($stmt);
+ *		oci_free_statement($stmt);
  *
  * @package Atk14
  * @subpackage Database
@@ -253,6 +253,39 @@ class OracleMole extends DbMole{
 		return $out;
 	}
 
+	function _iterateRows($query,$bind_ar = [], $options = []){
+		$options = array_merge([
+			"lowercase_field_names" => true,
+			"limit" => null,
+			"offset" => null,
+		],$options);
+
+		$stmt = $this->executeQuery($query,$bind_ar,$options);
+
+		if(!$stmt){ return null; }
+
+		$gen = (function() use($stmt, $options) {
+			while(OCIFetchInto($stmt,$row,OCI_ASSOC + OCI_RETURN_NULLS)){
+				unset($row["RNUM____"]);
+				$_row = [];
+				foreach($row as $_key => $_value){
+					if(is_object($_value)){
+						$_value = $_value->load();
+						if(strlen($_value)==0){ $_value = null; }
+					}
+					if($options["lowercase_field_names"]){
+						$_key = strtolower($_key);
+					}
+					$_row[$_key] = $_value;
+				}
+				yield $_row;
+			}
+			oci_free_statement($stmt);
+		})();
+
+		return $gen;
+	}
+
 	function SelectSequenceNextval($sequence_name){
 		return $this->selectSingleValue("SELECT $sequence_name.NEXTVAL FROM DUAL"); //
 	}
@@ -401,8 +434,8 @@ class OracleMole extends DbMole{
 	}
 
 	function _freeLastOracleStatement(){
-		if($this->_LastOracleStatement && !($out = OCIFreeStatement($this->_LastOracleStatement))){
-			$this->_raiseDBError("Can't do OCIFreeStatement: ".$this->_getDbLastErrorMessage());
+		if($this->_LastOracleStatement && !($out = oci_free_statement($this->_LastOracleStatement))){
+			$this->_raiseDBError("Can't do oci_free_statement: ".$this->_getDbLastErrorMessage());
 		}
 
 		$this->_LastOracleStatement = null;
