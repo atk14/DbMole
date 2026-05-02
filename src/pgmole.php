@@ -82,7 +82,7 @@ class PgMole Extends DbMole{
 			$out[] = $row;
 		}
 		pg_free_result($result);
-		reset($out);
+
 		return $out;
 	}
 

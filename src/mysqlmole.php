@@ -50,7 +50,7 @@ class MysqlMole extends DbMole{
 			$out[] = $row;
 		}
 		mysqli_free_result($result);
-		reset($out);
+
 		return $out;
 	}
 

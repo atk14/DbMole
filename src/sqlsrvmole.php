@@ -41,7 +41,7 @@ class SqlsrvMole extends DbMole {
 			$out[] = $row;
 		}
 		sqlsrv_free_stmt($result);
-		reset($out);
+
 		return $out;
 	}
 

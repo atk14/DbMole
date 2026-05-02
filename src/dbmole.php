@@ -1070,7 +1070,6 @@ class DbMole{
 			}
 		}
 
-		reset($out);
 		return $out;
 	}
 
