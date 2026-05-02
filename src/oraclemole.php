@@ -331,7 +331,7 @@ class OracleMole extends DbMole{
 		}
 		
 		$query = "INSERT INTO $table_name (\n  ".join(",\n  ",$table_fields)."\n) VALUES(\n  ".join(",\n  ",$table_values)."\n)";
-		if(sizeof($lob_fields)>0){
+		if(count($lob_fields)>0){
 			$query .= " RETURNING ".join(", ",$lob_fields)." INTO ".join(", ",$lob_bind_keys);
 		}
 		return $this->doQuery($query,$bind_ar,$options);

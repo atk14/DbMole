@@ -377,7 +377,7 @@ class DbMole{
 
 		$counter = 1;
 		foreach(self::$__DMOLE_STATISTICS__ as $q => $itms){	
-			$itms_count = sizeof($itms);
+			$itms_count = count($itms);
 			$total_queries += $itms_count;
 			$current_query_time = 0.0;
 			foreach($itms as $itm){
@@ -872,7 +872,7 @@ class DbMole{
 			// "limit" => 1, // This is not possible because of: $dbmole->selectInt("UPDATE articles SET title='New title' WHERE id=1 AND updated_at IS NULL RETURNING id");
 		);
 		$records = $this->_selectRows($query,$bind_ar,$options);
-		if(!isset($records) || sizeof($records)==0){
+		if(!isset($records) || count($records)==0){
 			return null;
 		}
 		return $records[0];
@@ -938,7 +938,7 @@ class DbMole{
 		}
 		$ar = $this->selectFirstRow($query,$bind_ar,$options);
 
-		if(!isset($ar) || sizeof($ar)==0){ return null; }
+		if(!isset($ar) || count($ar)==0){ return null; }
 
 		$out = null;
 
@@ -1321,7 +1321,7 @@ class DbMole{
 					$update_ar[] = $this->escapeColumnName4Sql($_key)."=$_value";
 				}
 			}
-			if(sizeof($update_ar)==0){ return true; } // je to podivne, ale tady se nic nemeni; nekdo vola nmetodu nesmyslne ve stylu: $dbmole->insertOrUpdateRecord("persons",array("id" => 20));
+			if(count($update_ar)==0){ return true; } // je to podivne, ale tady se nic nemeni; nekdo vola nmetodu nesmyslne ve stylu: $dbmole->insertOrUpdateRecord("persons",array("id" => 20));
 			return $this->doQuery("UPDATE ".$this->escapeTableName4Sql($table_name)." SET ".join(", ",$update_ar)." WHERE ".$this->escapeColumnName4Sql($id_field)."=:$id_field",$bind_ar,$options);
 
 		}
