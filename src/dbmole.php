@@ -1061,9 +1061,10 @@ class DbMole{
 
 		$rows = $this->_selectRows($query,$bind_ar,$options);
 		if(!is_array($rows)){ return null; }
-		foreach($rows as $row){	
-			foreach($row as $value){	
-				if(isset($value) && isset($options["type"])){
+		$has_type = isset($options["type"]);
+		foreach($rows as $row){
+			foreach($row as $value){
+				if($has_type && isset($value)){
 					$this->_settype($value,$options["type"]);
 				}
 				$out[] = $value;
