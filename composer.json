@@ -1,6 +1,6 @@
 {
     "name": "atk14/dbmole",
-    "description": "Database layer library for Atk14 framework",
+    "description": "Simple database abstraction layer for PostgreSQL, MySQL, Oracle and SQL Server",
     "type": "library",
     "homepage": "https://github.com/atk14/DbMole",
     "license": "MIT",
