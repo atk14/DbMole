@@ -10,6 +10,7 @@ if(getenv("DBMOLE_USE_PREPARED_STATEMENTS")){
 
 require(__DIR__."/connections_and_handler.php");
 require(__DIR__."/article.php");
+require(__DIR__."/stringy_object.php");
 
 // === Creating testing table in postgresql
 $pg = PgMole::GetInstance();
