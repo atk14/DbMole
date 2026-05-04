@@ -150,6 +150,11 @@ class DbMole{
 	 */
 	protected $_start_utime;
 
+	/**
+	 * @ignore
+	 */
+	protected $_connection_swap_variable = null;
+
 	static private $__DMOLE_STATISTICS__;
 
 	/**
@@ -1785,7 +1790,7 @@ class DbMole{
 				$this->_DbConnect = $GLOBALS[$connection_swap_variable];
 				unset($GLOBALS[$connection_swap_variable]);
 			}
-			unset($this->_connection_swap_variable);
+			$this->_connection_swap_variable = null;
 		}
 	}
 
