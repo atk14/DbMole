@@ -1,6 +1,10 @@
 <?php
 class TcBase extends TcSuperBase{
 
+	public $my;
+	public $pg;
+	public $base;
+
 	function _setUp(){
 		$m = &$this->_get_moles();
 		$this->my = $m["my"];
