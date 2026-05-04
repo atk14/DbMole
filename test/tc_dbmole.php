@@ -688,7 +688,7 @@ class TcDbmole extends TcBase{
 
 		$exception_thrown = false;
 		try {
-			$dbmole->selectRows("SELECT * FROM articles");
+			@$dbmole->selectRows("SELECT * FROM articles");
 		} catch( Exception $e) {
 			$exception_thrown = true;
 		}
@@ -702,7 +702,7 @@ class TcDbmole extends TcBase{
 
 		$exception_thrown = false;
 		try {
-			$dbmole->selectRows("SELECT * FROM articles");
+			@$dbmole->selectRows("SELECT * FROM articles");
 		} catch( Exception $e) {
 			$exception_thrown = true;
 		}
@@ -762,7 +762,7 @@ class TcDbmole extends TcBase{
 
 		$exception_thrown = false;
 		try {
-			$dbmole->doQuery("UPDATE test_table SET title=:bad_value",[":bad_value" => "admin\xbf\x27 OR 1=1--"]);
+			@$dbmole->doQuery("UPDATE test_table SET title=:bad_value",[":bad_value" => "admin\xbf\x27 OR 1=1--"]);
 		}catch(Exception $e){
 			$exception_thrown = true;
 		}catch(Throwable $e){
@@ -782,7 +782,7 @@ class TcDbmole extends TcBase{
 
 		$exception_thrown = false;
 		try {
-			$dbmole->iterateRows("SELECT * FROM test_table",[],["cache" => 60]);
+			@$dbmole->iterateRows("SELECT * FROM test_table",[],["cache" => 60]);
 		}catch(Exception $e){
 			$exception_thrown = true;
 		}
